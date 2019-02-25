@@ -93,30 +93,7 @@
             </v-layout>
           </v-card>
 
-          <v-card>
-            <v-layout row wrap>
-              <v-flex xs4>
-                <v-btn block>Left</v-btn>
-              </v-flex>
-              <v-flex xs4>
-                <v-btn block>Forward</v-btn>
-              </v-flex>
-              <v-flex xs4>
-                <v-btn block>Right</v-btn>
-              </v-flex>
-            </v-layout>
-            <v-layout row wrap>
-              <v-flex xs4>
-                <v-btn block>Left</v-btn>
-              </v-flex>
-              <v-flex xs4>
-                <v-btn block>Backward</v-btn>
-              </v-flex>
-              <v-flex xs4>
-                <v-btn block>Right</v-btn>
-              </v-flex>
-            </v-layout>
-          </v-card>
+          <movement />
         </v-flex>
       </v-layout>
     </v-card>
@@ -148,7 +125,8 @@
     components: {
       PartyMember: () => import('@/components/dm/PartyMember'),
       PartyOrder: () => import('@/components/dm/PartyOrder'),
-      Inventory: () => import('@/components/dm/Inventory')
+      Inventory: () => import('@/components/dm/Inventory'),
+      Movement: () => import('@/components/dm/Movement')
     },
     data: () => ({
       party,

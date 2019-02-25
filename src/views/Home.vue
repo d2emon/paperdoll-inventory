@@ -2,7 +2,7 @@
   <div id="home">
     <dungeon-master />
 
-    <articles>
+    <!-- articles>
       <banner />
     </articles>
 
@@ -10,7 +10,7 @@
 
     <subscribe />
 
-    <social />
+    <social / -->
   </div>
 </template>
 
