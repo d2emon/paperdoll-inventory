@@ -388,6 +388,179 @@
       ]
     })
   }
+
+/*
+$(document).ready(function(){
+	var gnd = "male";
+	var scarf = "";
+	var jacket = "";
+	var shirt = "";
+	var pants = "";
+	var shoes = "";
+	var gloves = "";
+	var belt = "";
+	var skirt = "";
+
+	var canvas = document.getElementById("canvas");
+	var context = canvas.getContext("2d");
+
+	$(".selection").click(function(){
+		var slct = $(this).attr('id');
+		$('.slctnLeft > .selection').removeClass('activeTitleLeft');
+		$(this).addClass('activeTitleLeft');
+		$('.slctContLeft > .slctBgs').removeClass('activeContLeft');
+		$("#" + slct + 'Bg').addClass('activeContLeft');
+	});
+	$("#load1, #load2, #load3, #load4").click(function(){
+		var nm = $(this).attr("name");
+		$("#armor").html(window.localStorage["outfitSaved" + nm]);
+	});
+	$("#save1, #save2, #save3, #save4").click(function(){
+		var nm = $(this).attr("name");
+		window.localStorage.setItem('outfitSaved' + nm, $("#armor").html());
+	});
+	$(".genderSlct").click(function(){
+		gnd = $(this).attr('id');
+		$('#gender > .genderSlct').removeClass('slctdGender');
+		$(this).addClass('slctdGender');
+
+		$("#gndArm").css("background-image", "url('../images/armor/" + gnd + "/body.png')");
+		$(".armBg").each(function(i, obj){
+			var curId = $(this).attr('id');
+			var newUrl = "url('../images/clothing/n" + gnd + "/" + curId + ".png')";
+			$(this).css("background-image", newUrl);
+		});
+		$("#scarfArm").css("background-image", "url('../images/clothing/n" + gnd + "/" + scarf + ".png')");
+		$("#gloveArm").css("background-image", "url('../images/clothing/n" + gnd + "/" + gloves + ".png')");
+		$("#jacketArm").css("background-image", "url('../images/clothing/n" + gnd + "/" + jacket + ".png')");
+		$("#shirtArm").css("background-image", "url('../images/clothing/n" + gnd + "/" + shirt + ".png')");
+		$("#shirtArm").css("background-image", "url('../images/clothing/n" + gnd + "/" + shirt + ".png')");
+		$("#shoesArm").css("background-image", "url('../images/clothing/n" + gnd + "/" + shoes + ".png')");
+		$("#pantsArm").css("background-image", "url('../images/clothing/n" + gnd + "/" + pants + ".png')");
+		$("#skirtArm").css("background-image", "url('../images/clothing/n" + gnd + "/" + skirt + ".png')");
+		$("#beltArm").css("background-image", "url('../images/clothing/n" + gnd + "/" + belt + ".png')");
+		$("#bshoesArm").css("background-image", "url('../images/clothing/n" + gnd + "/b" + shoes + ".png')");
+		$("#bshirtArm").css("background-image", "url('../images/clothing/n" + gnd + "/b" + shirt + ".png')");
+		$("#bjacketArm").css("background-image", "url('../images/clothing/n" + gnd + "/b" + jacket + ".png')");
+	});
+	$("#clearAll").click(function(){
+		$(".armPiece").css('background-image', 'none');
+		$('.genderSlct').removeClass('slctdGender');
+		scarf = "";
+		jacket = "";
+		shirt = "";
+		pants = "";
+		gloves = "";
+		shoes = "";
+		skirt = "";
+	});
+	$("#scarfsBg > .armBg").click(function(){
+		nscarf = $(this).attr('id');
+		if(nscarf === scarf){
+			$("#scarfArm").css('background-image', 'none');
+			scarf = "";
+		}else{
+			var slct = $(this).css('background-image');
+			$("#scarfArm").css({"background-image": slct});
+			scarf = nscarf;
+		}
+	});
+	$("#jacketsBg > .armBg").click(function(){
+		njacket = $(this).attr('id');
+		if(njacket === jacket){
+			$("#jacketArm, #bjacketArm").css('background-image', 'none');
+			jacket = "";
+		}else{
+			var slct = $(this).css('background-image');
+			$("#jacketArm").css({"background-image": slct});
+			$("#bjacketArm").css({"background-image": "url('../images/clothing/n" + gnd + "/b" + njacket + ".png')"});
+			jacket = njacket;
+		}
+	});
+	$("#shirtsBg > .armBg, #shirts2Bg > .armBg").click(function(){
+		nshirt = $(this).attr('id');
+		if(nshirt === shirt){
+			$("#shirtArm, #bshirtArm").css('background-image', 'none');
+			shirt = "";
+		}else{
+			var slct = $(this).css('background-image');
+			$("#shirtArm").css({"background-image": slct});
+			$("#bshirtArm").css({"background-image": "url('../images/clothing/n" + gnd + "/b" + nshirt + ".png')"});
+			shirt = nshirt;
+		}
+	});
+	$("#skirtsBg > .armBg").click(function(){
+		nskirt = $(this).attr('id');
+		if(nskirt === skirt){
+			$("#skirtArm, #bskirtArm").css('background-image', 'none');
+			skirt = "";
+		}else{
+			var slct = $(this).css('background-image');
+			$("#skirtArm").css({"background-image": slct});
+			$("#bskirtArm").css({"background-image": "url('../images/clothing/n" + gnd + "/b" + nskirt + ".png')"});
+			skirt = nskirt;
+		}
+	});
+	$("#pantsBg > .armBg").click(function(){
+		npants = $(this).attr('id');
+		if(npants === pants){
+			$("#pantsArm").css('background-image', 'none');
+			pants = "";
+		}else{
+			var slct = $(this).css('background-image');
+			$("#pantsArm").css({"background-image": slct});
+			pants = npants;
+		}
+	});
+	$("#shoesBg > .armBg").click(function(){
+		nshoes = $(this).attr('id');
+		if(nshoes === shoes){
+			$("#shoesArm, #bshoesArm").css('background-image', 'none');
+			shoes = "";
+		}else{
+			var slct = $(this).css('background-image');
+			$("#shoesArm").css({"background-image": slct});
+			$("#bshoesArm").css({"background-image": "url('../images/clothing/n" + gnd + "/b" + nshoes + ".png')"});
+			shoes = nshoes;
+		}
+	});
+	$("#glovesBg > .armBg").click(function(){
+		ngloves = $(this).attr('id');
+		if(ngloves === gloves){
+			$("#gloveArm").css('background-image', 'none');
+			gloves = "";
+		}else{
+			var slct = $(this).css('background-image');
+			$("#gloveArm").css({"background-image": slct});
+			gloves = ngloves;
+		}
+	});
+	$("#beltsBg > .armBg").click(function(){
+		nbelt = $(this).attr('id');
+		if(nbelt === belt){
+			$("#beltArm").css('background-image', 'none');
+			belt = "";
+		}else{
+			var slct = $(this).css('background-image');
+			$("#beltArm").css({"background-image": slct});
+			belt = nbelt;
+		}
+	});
+	$("#toPic").click(function(){
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		$("#canvas").css({"display": "inline"});
+		$($(".armPiece").get().reverse()).each(function(){
+			imgTop = $(this).css("margin-top").replace('px','');
+			imgLeft = $(this).css("margin-left").replace('px','');
+			imgWd = $(this).css("width").replace('px','');
+			imgHt = $(this).css("height").replace('px','');
+			var img = new Image();
+			img.src = $(this).css("background-image").replace('url(\"','').replace('\")','');
+			context.drawImage(img, imgLeft, imgTop, imgWd, imgHt);
+		});
+	});
+});
+ */
 </script>
 
 <style scoped>
