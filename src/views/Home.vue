@@ -1,5 +1,7 @@
 <template>
   <div id="home">
+    <dungeon-master />
+
     <articles>
       <banner />
     </articles>
@@ -17,6 +19,7 @@
     name: 'Home',
 
     components: {
+      DungeonMaster: () => import('@/components/DungeonMaster'),
       About: () => import('@/components/home/About'),
       Articles: () => import('@/components/home/Articles'),
       Banner: () => import('@/components/home/Banner'),
