@@ -7,6 +7,9 @@
       <v-btn icon>Sleep</v-btn>
       <v-btn icon>X</v-btn>
     </v-toolbar>
+
+    <doll />
+
     <v-layout row wrap>
       <v-flex xs4>
         <v-btn icon><v-icon>mdi-eye</v-icon></v-btn>
@@ -168,6 +171,9 @@
 <script>
   export default {
     name: 'Inventory',
+    components: {
+      Doll: () => import('@/components/dm/Doll')
+    },
     props: [
       "pc"
     ]
