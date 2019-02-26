@@ -22,6 +22,23 @@ export default new Router({
       path: '/dungeon-master',
       name: 'Dm',
       component: () => import('@/views/Dm')
+    },
+    {
+      path: '/ultima',
+      redirect: '/',
+      component: () => import('@/views/ultima/Ultima'),
+      children: [
+        {
+          path: '',
+          name: 'Ultima',
+          component: () => import('@/views/ultima/UltimaStart')
+        },
+        {
+          path: 'generate',
+          name: 'UltimaGenerator',
+          component: () => import('@/views/ultima/UltimaGenerator')
+        }
+      ]
     }
   ]
 })
