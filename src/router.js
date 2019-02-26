@@ -12,6 +12,16 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/blog',
+      name: 'Blog',
+      component: () => import('@/views/Blog')
+    },
+    {
+      path: '/dungeon-master',
+      name: 'Dm',
+      component: () => import('@/views/Dm')
     }
   ]
 })

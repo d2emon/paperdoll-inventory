@@ -47,16 +47,23 @@
 <script>
   // Utilities
   import {
+    mapState,
     mapGetters,
-    mapMutations
+    mapMutations,
+    mapActions
   } from 'vuex'
 
   export default {
     computed: {
-      ...mapGetters('pages', ['links'])
+      ...mapState('pages', ['pages']),
+      ...mapGetters('articles', ['categories']),
+      links () { return this.pages.concat(this.categories) }
     },
-
+    mounted () {
+      this.fetchArticles()
+    },
     methods: {
+      ...mapActions('articles', ['fetchArticles']),
       ...mapMutations(['toggleDrawer']),
       onClick (e, item) {
         e.stopPropagation()

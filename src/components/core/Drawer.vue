@@ -22,6 +22,7 @@
 <script>
   // Utilities
   import {
+    mapState,
     mapGetters,
     mapMutations
   } from 'vuex'
@@ -30,7 +31,9 @@
     name: 'CoreDrawer',
 
     computed: {
-      ...mapGetters('pages', ['links']),
+      ...mapState('pages', ['pages']),
+      ...mapGetters('articles', ['categories']),
+      links () { return this.pages.concat(this.categories) },
       drawer: {
         get () {
           return this.$store.state.drawer

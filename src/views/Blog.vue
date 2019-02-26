@@ -10,7 +10,6 @@
 
     <social />
   </div>
-
 </template>
 
 <script>

@@ -8,28 +8,6 @@
       row
       wrap
     >
-      <v-flex xs3>
-        <v-card>
-          <v-card-title class="headline">
-            Страницы
-          </v-card-title>
-
-          <v-list>
-            <v-list-tile
-              v-for="item in pages"
-              :key="item.text"
-              :prepend-icon="item.action"
-              :to="item.to"
-              :href="item.href"
-            >
-              <v-list-tile-content>
-                <v-list-tile-title>{{ item.text }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-        </v-card>
-      </v-flex>
-
       <v-flex
         v-for="game in games"
         :key="game.title"
@@ -42,7 +20,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
+  import { mapState, mapActions } from 'vuex'
 
   export default {
     name: 'Home',
@@ -52,6 +30,12 @@
     computed: {
       ...mapState('pages', ['pages']),
       ...mapState('games', ['games'])
+    },
+    mounted () {
+      this.fetchGames()
+    },
+    methods: {
+      ...mapActions('games', ['fetchGames'])
     }
   }
 </script>

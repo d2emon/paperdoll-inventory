@@ -1,25 +1,22 @@
-const imageRoot = process.env.BASE_URL + 'games/';
+import gamesService from '../../services/games';
 
 const state = {
-  games: [
-    {
-      title: 'Dungeon Master',
-      link: '/dungeon-master',
-      image: `${imageRoot}ultima.jpg`
-    },
-    {
-      title: 'Ultima',
-      link: '/ultima',
-      image: `${imageRoot}ultima.jpg`
-    },
-  ]
+  games: []
 };
 
 const getters = {};
 
-const mutations = {};
+const mutations = {
+  setGames: (state, games) => { state.games = games }
+};
 
-const actions = {};
+const actions = {
+  fetchGames: ({ commit }) => {
+    gamesService
+      .fetchGames()
+      .then(({ games }) => commit('setGames', games));
+  }
+};
 
 export default {
   namespaced: true,
