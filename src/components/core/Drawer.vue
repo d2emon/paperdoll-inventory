@@ -30,7 +30,7 @@
     name: 'CoreDrawer',
 
     computed: {
-      ...mapGetters(['links']),
+      ...mapGetters('pages', ['links']),
       drawer: {
         get () {
           return this.$store.state.drawer

@@ -53,7 +53,7 @@
 
   export default {
     computed: {
-      ...mapGetters(['links'])
+      ...mapGetters('pages', ['links'])
     },
 
     methods: {

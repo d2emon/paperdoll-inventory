@@ -1,30 +1,57 @@
 <template>
-  <div id="home">
-    <dungeon-master />
+  <v-container
+    id="home"
+    fluid
+    grid-list-md
+  >
+    <v-layout
+      row
+      wrap
+    >
+      <v-flex xs3>
+        <v-card>
+          <v-card-title class="headline">
+            Страницы
+          </v-card-title>
 
-    <!-- articles>
-      <banner />
-    </articles>
+          <v-list>
+            <v-list-tile
+              v-for="item in pages"
+              :key="item.text"
+              :prepend-icon="item.action"
+              :to="item.to"
+              :href="item.href"
+            >
+              <v-list-tile-content>
+                <v-list-tile-title>{{ item.text }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-card>
+      </v-flex>
 
-    <about />
-
-    <subscribe />
-
-    <social / -->
-  </div>
+      <v-flex
+        v-for="game in games"
+        :key="game.title"
+        xs3
+      >
+        <game-card :game="game" />
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+
   export default {
     name: 'Home',
-
     components: {
-      DungeonMaster: () => import('@/components/DungeonMaster'),
-      About: () => import('@/components/home/About'),
-      Articles: () => import('@/components/home/Articles'),
-      Banner: () => import('@/components/home/Banner'),
-      Social: () => import('@/components/home/Social'),
-      Subscribe: () => import('@/components/home/Subscribe')
+      GameCard: () => import('@/components/GameCard')
+    },
+    computed: {
+      ...mapState('pages', ['pages']),
+      ...mapState('games', ['games'])
     }
   }
 </script>
