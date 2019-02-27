@@ -73,9 +73,11 @@ const mutations = {
   },
 
   goBy: (state, location) => {
+    const x = state.location.x || 0
+    const y = state.location.y || 0
     state.location = {
-      x: state.location.x + location.x,
-      y: state.location.y + location.y
+      x: x + location.x,
+      y: y + location.y
     }
   }
 }

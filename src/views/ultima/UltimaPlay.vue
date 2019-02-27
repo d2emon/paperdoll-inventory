@@ -8,7 +8,31 @@
         xs12
         class="game-map"
       >
-        <v-layout
+        <template
+          v-for="(row, j) in localMap"
+        >
+          <template
+            v-for="(col, i) in row"
+          >
+            <div
+              :key="`div-${i}-${j}`"
+              class="map-item"
+              :style="`left: ${col.x * 32}px; top: ${col.y * 32}px;`"
+            >
+              <v-img
+                :src="col.image"
+              />
+            </div>
+          </template>
+        </template>
+        <div
+          class="player-character"
+        >
+          <v-img
+            :src="require('@/assets/ultima/pc.png')"
+          />
+        </div>
+        <!-- v-layout
           v-for="(row, j) in localMap"
           :key="`row-${j}`"
           row
@@ -26,7 +50,7 @@
               :src="col.image"
             />
           </v-flex>
-        </v-layout>
+        </v-layout -->
       </v-flex>
     </v-layout>
     <v-layout
@@ -109,13 +133,31 @@
 <style scoped>
 .game-map {
   background-color: black;
+  height: 300px;
 }
 
 .game-console {
-  display: flex;
   background-color: black;
   color: white;
   height: 175px;
   overflow: auto;
+}
+
+.map-item {
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  position: absolute;
+  z-index: 0;
+}
+
+.player-character {
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  position: absolute;
+  top: 128px;
+  left: 288px;
+  z-index: 10;
 }
 </style>
