@@ -13,6 +13,7 @@ const state = {
   race: null,
   sex: null,
   characterClass: null,
+  name: '',
 
   error: null
 }
@@ -35,7 +36,7 @@ const mutations = {
       stamina: character.stamina,
       charisma: character.charisma,
       wisdom: character.wisdom,
-      intelligence: character.intelligence,
+      intelligence: character.intelligence
     }
 
     state.race = character.race
@@ -45,6 +46,7 @@ const mutations = {
   setRace: (state, race) => { state.race = race },
   setSex: (state, sex) => { state.sex = sex },
   setClass: (state, characterClass) => { state.characterClass = characterClass },
+  setName: (state, name) => { state.name = name },
 
   recalcPoints: (state) => {
     state.points = 30
@@ -92,6 +94,22 @@ const actions = {
     }
     commit('setStat', { stat, value })
     commit('recalcPoints')
+  },
+  save: ({ state }) => {
+    const {
+      name,
+      stats,
+      race,
+      sex,
+      characterClass
+    } = state
+    alert(JSON.stringify({
+      name,
+      stats,
+      race_id: race.id,
+      sex: sex.id,
+      characterClass: characterClass.id
+    }))
   }
 }
 

@@ -6,155 +6,103 @@
 
     <v-stepper v-model="step">
       <v-stepper-header>
-        <v-stepper-step :complete="step > 1" step="1">Distribute points</v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step :complete="step > 2" step="2">Select thy race</v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step step="3">Select thy sex</v-stepper-step>
+        <template
+          v-for="(title, id) in steps"
+        >
+          <v-stepper-step
+            :key="id"
+            :complete="(step > id + 1) || toSave"
+            :step="id + 1"
+          >
+            {{ title }}
+          </v-stepper-step>
+          <v-divider
+            v-if="id < steps.length - 1"
+            :key="`divider-${id}`"
+          />
+        </template>
       </v-stepper-header>
 
-      <v-stepper-items>
-        <v-stepper-content step="1">
-          <v-card>
-            <v-card-title>
-              <h3>Points left to distribute: {{ points }}</h3>
-            </v-card-title>
+      <v-layout
+        row
+        wrap
+      >
+        <v-flex
+          xs12
+          sm6
+        >
+          <character-sheet />
+        </v-flex>
+        <v-flex
+          xs12
+          sm6
+        >
+          <v-card
+            height="450px"
+          >
+            <v-stepper-items>
+              <v-stepper-content step="1">
+                <select-stats />
+              </v-stepper-content>
 
-            <v-list>
-              <stat-selector
-                v-for="stat in stats"
-                :key="stat.name"
-                :name="stat.name"
-                :stat="stat.stat"
-              />
-            </v-list>
+              <v-stepper-content step="2">
+                <list-selector
+                  title="Select thy race:"
+                  :items="races"
+                  :selected="race"
+                  @select="onSelectRace"
+                />
+              </v-stepper-content>
+
+              <v-stepper-content step="3">
+                <list-selector
+                  title="Select thy sex:"
+                  :items="sexes"
+                  :selected="sex"
+                  @select="onSelectSex"
+                />
+              </v-stepper-content>
+
+              <v-stepper-content step="4">
+                <list-selector
+                  title="Select thy class:"
+                  :items="classes"
+                  :selected="characterClass"
+                  @select="onSelectClass"
+                />
+              </v-stepper-content>
+
+              <v-stepper-content step="5">
+                <select-name />
+              </v-stepper-content>
+            </v-stepper-items>
           </v-card>
-
-          <v-btn
-            color="primary"
-            :disabled="!canSelectRace"
-            @click="selectRace"
-          >
-            Continue
-          </v-btn>
-
-          <v-btn
-            flat
-            to="/ultima"
-          >
-            Cancel
-          </v-btn>
-        </v-stepper-content>
-
-        <v-stepper-content step="2">
-          <v-card>
-            <v-card-title>
-              <h3>Select thy race:</h3>
-            </v-card-title>
-
-            <v-list>
-              <v-list-tile
-                v-for="r in races"
-                :key="r.id"
-                :color="race && race.id === r.id ? 'primary' : undefined"
-                @click="setRace(r)"
-              >
-                <v-list-tile-content>
-                  <v-list-tile-title v-text="r.name" />
-                </v-list-tile-content>
-              </v-list-tile>
-            </v-list>
-          </v-card>
-
-          <v-btn
-            color="primary"
-            :disabled="!canSelectSex"
-            @click="selectSex"
-          >
-            Continue
-          </v-btn>
-
-          <v-btn
-            flat
-            @click="selectStats"
-          >
-            Cancel
-          </v-btn>
-        </v-stepper-content>
-
-        <v-stepper-content step="3">
-          <v-card>
-            <v-card-title>
-              <h3>Select thy sex:</h3>
-            </v-card-title>
-
-            <v-list>
-              <v-list-tile
-                v-for="s in sexes"
-                :key="s.id"
-                :color="sex && sex.id === s.id ? 'primary' : undefined"
-                @click="setSex(s)"
-              >
-                <v-list-tile-content>
-                  <v-list-tile-title v-text="s.name" />
-                </v-list-tile-content>
-              </v-list-tile>
-            </v-list>
-          </v-card>
-
-          <v-btn
-            color="primary"
-            :disabled="!canSelectClass"
-            @click="selectClass"
-          >
-            Continue
-          </v-btn>
-
-          <v-btn
-            flat
-            @click="selectRace"
-          >
-            Cancel
-          </v-btn>
-        </v-stepper-content>
-
-        <v-stepper-content step="4">
-          <v-card>
-            <v-card-title>
-              <h3>Select thy class:</h3>
-            </v-card-title>
-
-            <v-list>
-              <v-list-tile
-                v-for="c in classes"
-                :key="c.id"
-                :color="characterClass && characterClass.id === c.id ? 'primary' : undefined"
-                @click="setClass(c)"
-              >
-                <v-list-tile-content>
-                  <v-list-tile-title v-text="c.name" />
-                </v-list-tile-content>
-              </v-list-tile>
-            </v-list>
-          </v-card>
-
-          <v-btn
-            color="primary"
-            :disabled="!canSelectSex"
-            @click="selectSex"
-          >
-            Continue
-          </v-btn>
-
-          <v-btn
-            flat
-            @click="selectSex"
-          >
-            Cancel
-          </v-btn>
-        </v-stepper-content>
-      </v-stepper-items>
+        </v-flex>
+      </v-layout>
     </v-stepper>
+
+    <v-card-actions>
+      <v-btn
+        color="primary"
+        :disabled="step <= 1"
+        @click.stop="prevStep"
+      >
+        Prev
+      </v-btn>
+      <v-spacer />
+      <v-btn
+        color="primary"
+        :disabled="!canNext"
+        @click.stop="nextStep"
+      >
+        Next
+      </v-btn>
+    </v-card-actions>
+
+    <save-dialog
+      v-model="toSave"
+      @save="onSave"
+    />
   </v-card>
 </template>
 
@@ -168,32 +116,51 @@
   export default {
     name: 'UltimaGenerator',
     components: {
-      StatSelector: () => import('@/components/ultima/StatSelector')
+      SelectStats: () => import('@/components/ultima/steps/SelectStats'),
+      ListSelector: () => import('@/components/ultima/steps/ListSelector'),
+      SelectName: () => import('@/components/ultima/steps/SelectName'),
+      CharacterSheet: () => import('@/components/ultima/CharacterSheet'),
+      SaveDialog: () => import('@/components/ultima/SaveDialog')
     },
     data: () => ({
       step: 1,
-      stats: [
-        { name: 'Strength', stat: 'strength' },
-        { name: 'Agility', stat: 'agility' },
-        { name: 'Stamina', stat: 'stamina' },
-        { name: 'Charisma', stat: 'charisma' },
-        { name: 'Wisdom', stat: 'wisdom' },
-        { name: 'Intelligence', stat: 'intelligence' }
-      ]
+      steps: [
+        'Distribute points',
+        'Select thy race',
+        'Select thy sex',
+        'Select thy class',
+        'Select thy name'
+      ],
+      toSave: false
     }),
     computed: {
       ...mapState('pc', [
         'points',
         'races',
         'sexes',
+        'classes',
 
+        'stats',
         'race',
         'sex',
-        'characterClass'
+        'characterClass',
+        'name'
       ]),
-      canSelectRace () { return this.points === 0 && this.step === 1 },
-      canSelectSex () { return this.race !== null && this.step === 2 }
-      canSelectClass () { return this.sex !== null && this.step === 3 }
+      canNext () {
+        switch (this.step) {
+          case 1:
+            return this.points === 0
+          case 2:
+            return this.race !== null
+          case 3:
+            return this.sex !== null
+          case 4:
+            return this.characterClass !== null
+          case 5:
+            return !!this.name
+        }
+        return false
+      }
     },
     mounted () {
       this.createCharacter()
@@ -202,24 +169,54 @@
       ...mapActions('pc', [
         'createCharacter',
         'fetchRaces',
-        'fetchSexes'
+        'fetchSexes',
+        'fetchClasses',
+        'save'
       ]),
       ...mapMutations('pc', [
         'setRace',
-        'setSex'
+        'setSex',
+        'setClass',
+        'setName'
       ]),
       selectStats () { this.step = 1 },
-      selectRace () {
-        this.fetchRaces()
-          .then(() => { this.step = 2 })
+      selectRace () { this.fetchRaces().then(() => { this.step = 2 }) },
+      selectSex () { this.fetchSexes().then(() => { this.step = 3 }) },
+      selectClass () { this.fetchClasses().then(() => { this.step = 4 }) },
+      selectName () { this.step = 5 },
+      askForSave () { this.toSave = true },
+      goToStep (step) {
+        switch (step) {
+          case 1:
+            return this.selectStats()
+          case 2:
+            return this.selectRace()
+          case 3:
+            return this.selectSex()
+          case 4:
+            return this.selectClass()
+          case 5:
+            return this.selectName()
+          case 6:
+            return this.askForSave()
+        }
       },
-      selectSex () {
-        this.fetchSexes()
-          .then(() => { this.step = 3 })
+      prevStep () { this.goToStep(this.step - 1) },
+      nextStep () { this.goToStep(this.step + 1) },
+      onSelectRace (selected) {
+        this.setRace(selected)
+        this.nextStep()
       },
-      selectClass () {
-        this.fetchClasses()
-          .then(() => { this.step = 4 })
+      onSelectSex (selected) {
+        this.setSex(selected)
+        this.nextStep()
+      },
+      onSelectClass (selected) {
+        this.setClass(selected)
+        this.nextStep()
+      },
+      onSave () {
+        this.save()
       }
     }
   }

@@ -7,7 +7,7 @@ const RACES = [
 ]
 const SEXES = [
   { id: 'a', name: 'Male' },
-  { id: 'b', name: 'Female' },
+  { id: 'b', name: 'Female' }
 ]
 const CLASSES = [
   { id: 'a', name: 'Fighter' },
@@ -41,5 +41,5 @@ export default {
 
   fetchSexes: () => new Promise((resolve) => resolve({ sexes: SEXES })),
 
-  fetchClasses: () => new Promise((resolve) => resolve({ races: CLASSES }))
+  fetchClasses: () => new Promise((resolve) => resolve({ classes: CLASSES }))
 }
