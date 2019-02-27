@@ -117,7 +117,7 @@
     name: 'UltimaGenerator',
     components: {
       SelectStats: () => import('@/components/ultima/steps/SelectStats'),
-      ListSelector: () => import('@/components/ultima/steps/ListSelector'),
+      ListSelector: () => import('@/components/ultima/ListSelector'),
       SelectName: () => import('@/components/ultima/steps/SelectName'),
       CharacterSheet: () => import('@/components/ultima/CharacterSheet'),
       SaveDialog: () => import('@/components/ultima/SaveDialog')
@@ -168,10 +168,10 @@
     methods: {
       ...mapActions('pc', [
         'createCharacter',
+        'saveCharacter',
         'fetchRaces',
         'fetchSexes',
-        'fetchClasses',
-        'save'
+        'fetchClasses'
       ]),
       ...mapMutations('pc', [
         'setRace',
@@ -215,9 +215,7 @@
         this.setClass(selected)
         this.nextStep()
       },
-      onSave () {
-        this.save()
-      }
+      onSave () { this.saveCharacter().then(() => this.$router.push('/ultima')) }
     }
   }
 </script>

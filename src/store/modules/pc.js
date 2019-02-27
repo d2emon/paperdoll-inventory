@@ -30,6 +30,8 @@ const mutations = {
   setClasses: (state, classes) => { state.classes = classes },
 
   setCharacter: (state, character) => {
+    state.name = character.name
+
     state.stats = {
       strength: character.strength,
       agility: character.agility,
@@ -41,6 +43,7 @@ const mutations = {
 
     state.race = character.race
     state.sex = character.sex
+    state.characterClass = character.characterClass
   },
   setStat: (state, { stat, value }) => { state.stats[stat] = value },
   setRace: (state, race) => { state.race = race },
@@ -81,11 +84,34 @@ const actions = {
         commit('recalcPoints')
       })
   },
-  loadCharacter: ({ state, commit }) => {
+  fetchCharacters: ({ state, commit }) => {
     return pcService
       .fetchCharacters()
       .then(({ characters }) => commit('setCharacters', characters))
       .catch(e => commit('setError', e.message))
+  },
+  loadCharacter: ({ state, commit }, characterId) => {
+    console.log(characterId)
+    return pcService
+      .getCharacter(characterId)
+      .then(({ character }) => commit('setCharacter', character))
+  },
+  saveCharacter: ({ state }) => {
+    const {
+      name,
+      stats,
+      race,
+      sex,
+      characterClass
+    } = state
+    return pcService
+      .saveCharacter({
+        name,
+        ...stats,
+        race,
+        sex,
+        characterClass
+      })
   },
   usePoints: ({ state, commit }, { stat, value }) => {
     const oldValue = state.stats[stat]
@@ -94,22 +120,6 @@ const actions = {
     }
     commit('setStat', { stat, value })
     commit('recalcPoints')
-  },
-  save: ({ state }) => {
-    const {
-      name,
-      stats,
-      race,
-      sex,
-      characterClass
-    } = state
-    alert(JSON.stringify({
-      name,
-      stats,
-      race_id: race.id,
-      sex: sex.id,
-      characterClass: characterClass.id
-    }))
   }
 }
 

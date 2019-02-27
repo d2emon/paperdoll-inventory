@@ -3,7 +3,9 @@
     flat
     height="400px"
   >
-    <v-card-title>
+    <v-card-title
+      v-if="title"
+    >
       <h3 v-text="title" />
     </v-card-title>
 

@@ -17,7 +17,7 @@
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
-        @click="loadCharacter"
+        to="/ultima/characters"
       >
         <v-list-tile-content>
           <v-list-tile-title>
@@ -30,13 +30,8 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
-
   export default {
-    name: 'UltimaStart',
-    methods: {
-      ...mapActions('pc', ['loadCharacter'])
-    }
+    name: 'UltimaStart'
   }
 </script>
 

@@ -37,6 +37,16 @@ export default new Router({
           path: 'generate',
           name: 'UltimaGenerator',
           component: () => import('@/views/ultima/UltimaGenerator')
+        },
+        {
+          path: 'characters',
+          name: 'UltimaCharacters',
+          component: () => import('@/views/ultima/UltimaCharacters')
+        },
+        {
+          path: 'play',
+          name: 'UltimaPlay',
+          component: () => import('@/views/ultima/UltimaPlay')
         }
       ]
     }
