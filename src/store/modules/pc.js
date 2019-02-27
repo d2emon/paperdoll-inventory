@@ -15,6 +15,13 @@ const state = {
   characterClass: null,
   name: '',
 
+  hp: 0,
+  food: 0,
+  xp: 0,
+  coin: 0,
+
+  location: {},
+
   error: null
 }
 
@@ -44,6 +51,13 @@ const mutations = {
     state.race = character.race
     state.sex = character.sex
     state.characterClass = character.characterClass
+
+    state.hp = character.hp
+    state.food = character.food
+    state.xp = character.xp
+    state.coin = character.coin
+
+    state.location = character.location
   },
   setStat: (state, { stat, value }) => { state.stats[stat] = value },
   setRace: (state, race) => { state.race = race },
@@ -56,6 +70,13 @@ const mutations = {
     Object.keys(state.stats).forEach(stat => {
       state.points -= state.stats[stat] - 10
     })
+  },
+
+  goBy: (state, location) => {
+    state.location = {
+      x: state.location.x + location.x,
+      y: state.location.y + location.y
+    }
   }
 }
 
@@ -97,20 +118,18 @@ const actions = {
       .then(({ character }) => commit('setCharacter', character))
   },
   saveCharacter: ({ state }) => {
-    const {
-      name,
-      stats,
-      race,
-      sex,
-      characterClass
-    } = state
     return pcService
       .saveCharacter({
-        name,
-        ...stats,
-        race,
-        sex,
-        characterClass
+        name: state.name,
+        ...state.stats,
+        race: state.race,
+        sex: state.sex,
+        characterClass: state.characterClass,
+        hp: state.hp,
+        food: state.food,
+        xp: state.xp,
+        coin: state.coin,
+        location: state.location
       })
   },
   usePoints: ({ state, commit }, { stat, value }) => {
@@ -120,6 +139,12 @@ const actions = {
     }
     commit('setStat', { stat, value })
     commit('recalcPoints')
+  },
+  goDirection: ({ state, commit }, directionId) => {
+    if (directionId === 0) return commit('goBy', { x: 0, y: -1 })
+    if (directionId === 1) return commit('goBy', { x: 1, y: 0 })
+    if (directionId === 2) return commit('goBy', { x: 0, y: 1 })
+    if (directionId === 3) return commit('goBy', { x: -1, y: 0 })
   }
 }
 

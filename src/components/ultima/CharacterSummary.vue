@@ -1,0 +1,40 @@
+<template>
+  <v-list dense>
+    <v-list-tile>
+      <v-list-tile-content>Hits:</v-list-tile-content>
+      <v-list-tile-content class="align-end">{{hp}}</v-list-tile-content>
+    </v-list-tile>
+    <v-list-tile>
+      <v-list-tile-content>Food:</v-list-tile-content>
+      <v-list-tile-content class="align-end">{{food}}</v-list-tile-content>
+    </v-list-tile>
+    <v-list-tile>
+      <v-list-tile-content>Exp:</v-list-tile-content>
+      <v-list-tile-content class="align-end">{{xp}}</v-list-tile-content>
+    </v-list-tile>
+    <v-list-tile>
+      <v-list-tile-content>Coin:</v-list-tile-content>
+      <v-list-tile-content class="align-end">{{coin}}</v-list-tile-content>
+    </v-list-tile>
+  </v-list>
+</template>
+
+<script>
+  import { mapState } from 'vuex'
+
+  export default {
+    name: 'CharacterSummary',
+    computed: {
+      ...mapState('pc', [
+        'hp',
+        'food',
+        'xp',
+        'coin'
+      ])
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>

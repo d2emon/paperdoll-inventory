@@ -29,7 +29,14 @@ const player = {
 
   race: RACES[0],
   sex: SEXES[0],
-  characterClass: CLASSES[0]
+  characterClass: CLASSES[0],
+
+  hp: 150,
+  food: 200,
+  xp: 0,
+  coin: 100,
+
+  location: { x: 10, y: 5 }
 }
 
 const saved = [
@@ -62,7 +69,14 @@ export default {
 
       race: null,
       sex: null,
-      characterClass: null
+      characterClass: null,
+
+      hp: 150,
+      food: 200,
+      xp: 0,
+      coin: 100,
+
+      location: { x: 10, y: 5 }
     }
   })),
 
