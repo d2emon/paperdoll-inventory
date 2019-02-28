@@ -7,7 +7,7 @@
       label="Enter thy name:"
       :value="name"
       @input="setName"
-    />
+    ></v-text-field>
   </v-card>
 </template>
 

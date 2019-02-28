@@ -9,7 +9,7 @@
         type="number"
         :min="10"
         :max="maxValue"
-      />
+      ></v-text-field>
     </v-list-tile-action>
   </v-list-tile>
 </template>
