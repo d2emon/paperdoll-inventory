@@ -3,7 +3,9 @@ import worldMapService from '@/services/worldMap'
 const state = {
   localMap: [],
   castles: [],
-  location: {}
+  location: {},
+  castle: null,
+  castleMap: []
 }
 
 const getters = {}
@@ -21,7 +23,13 @@ const mutations = {
       y: item.y + worldMapService.Y_OFFSET - y
     }))
   },
-  setLocation: (state, location) => { state.location = location }
+  setLocation: (state, location) => { state.location = location },
+  setCastle: (state, castle) => {
+    state.castle = castle
+    state.castleMap = castle.localMap.map(item => ({
+      ...item
+    }))
+  }
 }
 
 const actions = {
@@ -33,6 +41,15 @@ const actions = {
         return worldMapService.getLocation(x, y)
       })
       .then(({ location }) => commit('setLocation', location))
+  },
+  fetchCastle: ({ commit, dispatch }, castleId) => {
+    return worldMapService
+      .getCastle(castleId)
+      .then(({ castle }) => {
+        commit('setCastle', castle)
+        return castle
+      })
+      .then(castle => dispatch('pc/enterCastle', castle, { root: true }))
   }
 }
 

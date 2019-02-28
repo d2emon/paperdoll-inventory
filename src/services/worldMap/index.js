@@ -26,6 +26,9 @@ const Y_OFFSET = 4
 const X_MAX = 255
 const Y_MAX = 255
 
+const X_MAX_CASTLE = 38
+const Y_MAX_CASTLE = 18
+
 const location = (x, y, locationType) => ({
   x,
   y,
@@ -72,5 +75,22 @@ export default {
 
     return resolve(true)
   }),
-  getLocation: (x, y) => new Promise((resolve) => resolve({ location: location(x, y, WORLD_MAP[y][x]) }))
+  canGoCastle: (x, y) => new Promise((resolve) => {
+    if (x < 0) return resolve(false)
+    if (x > X_MAX_CASTLE) return resolve(false)
+
+    if (y < 0) return resolve(false)
+    if (y > Y_MAX_CASTLE) return resolve(false)
+
+    /*
+    const location = WORLD_MAP[y][x]
+    if (location === WATER) return resolve(false)
+    if (location === TREES) return resolve(false)
+    if (location === MOUNTAINS) return resolve(false)
+    */
+
+    return resolve(true)
+  }),
+  getLocation: (x, y) => new Promise(resolve => resolve({ location: location(x, y, WORLD_MAP[y][x]) })),
+  getCastle: castleId => new Promise(resolve => resolve({ castle: castles.getCastle(castleId) }))
 }

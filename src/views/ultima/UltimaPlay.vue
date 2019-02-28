@@ -5,11 +5,9 @@
       wrap
     >
       <v-flex xs12>
-        <div
+        <castle-map
           v-if="inCastle"
-        >
-          CASTLE
-        </div>
+        />
         <local-map
           v-else
         />
@@ -68,6 +66,7 @@
     components: {
       CharacterSummary: () => import('@/components/ultima/CharacterSummary'),
       LocalMap: () => import('@/components/ultima/LocalMap'),
+      CastleMap: () => import('@/components/ultima/CastleMap'),
       GameConsole: () => import('@/components/ultima/GameConsole')
     },
     data: () => ({
@@ -94,11 +93,12 @@
           .then(() => this.fetchView(this.position))
       },
       enterCastle () {
-        this.doCommand({ command: 'Enter', location: this.location.castle })
+        this.doCommand({ command: 'Enter', castle: this.location.castle })
           .then(() => { this.inCastle = true })
       },
       exitCastle () {
-        this.inCastle = false
+        this.doCommand({ command: 'Exit', location: this.location.castle })
+          .then(() => { this.inCastle = false })
       }
     }
   }

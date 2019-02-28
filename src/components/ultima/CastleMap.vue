@@ -1,21 +1,15 @@
 <template>
   <div class="game-map">
     <v-img
-      v-for="(item, id) in localMap"
+      v-for="(item, id) in castleMap"
       :key="`location-${id}`"
       class="map-item"
-      :style="`left: ${item.x * 32}px; top: ${item.y * 32}px;`"
+      :style="`left: ${item.x * 16}px; top: ${item.y * 16}px;`"
       :src="images[item.locationType]"
     />
     <v-img
-      v-for="(item, id) in castles"
-      :key="`castle-${id}`"
-      class="map-item"
-      :style="`left: ${item.x * 32}px; top: ${item.y * 32}px;`"
-      :src="castleImage"
-    />
-    <v-img
       class="map-item player-character"
+      :style="`left: ${position.x * 16}px; top: ${position.y * 16}px;`"
       :src="playerImage"
     />
   </div>
@@ -25,23 +19,25 @@
   import { mapState } from 'vuex'
 
   export default {
-    name: 'LocalMap',
+    name: 'CastleMap',
     data: () => ({
       playerImage: `${process.env.BASE_URL}ultima/pc.png`,
       castleImage: `${process.env.BASE_URL}ultima/castle.png`,
       images: [
         `${process.env.BASE_URL}ultima/grass.png`,
-        `${process.env.BASE_URL}ultima/water.png`,
         `${process.env.BASE_URL}ultima/trees.png`,
-        `${process.env.BASE_URL}ultima/grass.png`, // Mountains
+        `${process.env.BASE_URL}ultima/trees.png`,
+        `${process.env.BASE_URL}ultima/water.png`,
         `${process.env.BASE_URL}ultima/castle.png`
       ]
     }),
     computed: {
       ...mapState('view', [
-        'localMap',
-        'castles'
-      ])
+        'castleMap',
+        'castles',
+        'castle'
+      ]),
+      ...mapState('pc', ['position'])
     }
   }
 </script>
@@ -53,16 +49,14 @@
   }
 
   .map-item {
-    width: 32px;
-    height: 32px;
+    width: 16px;
+    height: 16px;
     overflow: hidden;
     position: absolute;
     z-index: 0;
   }
 
   .player-character {
-    top: 128px;
-    left: 288px;
     z-index: 10;
   }
 </style>

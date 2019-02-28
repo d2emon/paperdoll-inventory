@@ -15,8 +15,8 @@ const CLASSES = [
   { id: 'c', name: 'Wizard' },
   { id: 'd', name: 'Thief' }
 ]
-const START_X = 16
-const START_Y = 5
+const START_X = 18
+const START_Y = 6
 
 const player = {
   character_id: 1,
@@ -39,8 +39,8 @@ const player = {
   coin: 100,
 
   position: {
-    x: START_X,
-    y: START_Y
+    x: 9, // START_X,
+    y: 4 // START_Y
   }
 }
 
