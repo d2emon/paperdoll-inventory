@@ -46,7 +46,7 @@ const canGo = (castleId, x, y) => {
 }
 
 export default {
-  getCastleAt: (x, y) => {
+  getCastleAt: (x, y) => new Promise(resolve => {
     const castles = CASTLES.filter(item => {
       if (item.x !== x) return false
       if (item.y !== y) return false
@@ -54,16 +54,18 @@ export default {
       return true
     })
 
-    return castles.length > 0 ? castle(castles[0]) : null
-  },
-  getCastlesIn: (x0, x1, y0, y1) => CASTLES
-    .filter(item => {
-      if (item.x < x0 || item.x > x1) return false
-      if (item.y < y0 || item.y > y1) return false
+    return resolve({ castle: castles.length > 0 ? castle(castles[0]) : null })
+  }),
+  getCastlesIn: (x0, x1, y0, y1) => new Promise(resolve => resolve({
+    castles: CASTLES
+      .filter(item => {
+        if (item.x < x0 || item.x > x1) return false
+        if (item.y < y0 || item.y > y1) return false
 
-      return true
-    })
-    .map(castle),
+        return true
+      })
+      .map(castle)
+  })),
   fetchCastle: castleId => new Promise(resolve => resolve({ castle: castle(CASTLES[castleId - 1]) })),
   canGo: (castleId, x, y) => new Promise((resolve) => resolve(canGo(castleId, x, y))),
   movePeople: castleId => new Promise(resolve => {
