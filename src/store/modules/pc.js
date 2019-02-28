@@ -74,6 +74,7 @@ const mutations = {
   setSex: (state, sex) => { state.sex = sex },
   setClass: (state, characterClass) => { state.characterClass = characterClass },
   setName: (state, name) => { state.name = name },
+  setLocation: (state, location) => { state.location = location },
 
   recalcPoints: (state) => {
     state.points = 30
@@ -82,7 +83,7 @@ const mutations = {
     })
   },
 
-  setLocation: (state, location) => { state.location = location }
+  eatFood: (state) => { state.food -= 0.5 }
 }
 
 const actions = {
@@ -159,6 +160,7 @@ const actions = {
         if (!canGo) return false
 
         commit('setLocation', { x, y })
+        commit('eatFood')
         return true
       })
   }

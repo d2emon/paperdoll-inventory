@@ -6,7 +6,7 @@
     </v-list-tile>
     <v-list-tile>
       <v-list-tile-content>Food:</v-list-tile-content>
-      <v-list-tile-content class="align-end">{{food}}</v-list-tile-content>
+      <v-list-tile-content class="align-end">{{Math.ceil(food)}}</v-list-tile-content>
     </v-list-tile>
     <v-list-tile>
       <v-list-tile-content>Exp:</v-list-tile-content>

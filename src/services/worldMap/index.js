@@ -12,6 +12,12 @@ const WORLD_MAP = [
   [1, 1, 1, 1, 1, 1, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ]
 
+const GRASS = 0
+const WATER = 1
+const TREES = 2
+const MOUNTAINS = 3
+const CASTLE = 4
+
 const X_OFFSET = 9
 const Y_OFFSET = 4
 
@@ -34,7 +40,8 @@ export default {
         localMap.push({
           x: x + minX,
           y: y + minY,
-          locationType
+          locationType,
+          castle: locationType === CASTLE
         })
       })
     })
@@ -48,7 +55,9 @@ export default {
     if (y > Y_MAX) return resolve(false)
 
     const location = WORLD_MAP[y][x]
-    if (location === 1) return resolve(false)
+    if (location === WATER) return resolve(false)
+    if (location === TREES) return resolve(false)
+    if (location === MOUNTAINS) return resolve(false)
 
     return resolve(true)
   })
