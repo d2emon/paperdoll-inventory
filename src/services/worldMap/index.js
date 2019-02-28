@@ -1,3 +1,5 @@
+import castles from './castles'
+
 const WORLD_MAP = [
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -10,18 +12,6 @@ const WORLD_MAP = [
   [1, 1, 1, 1, 1, 1, 0, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [1, 1, 1, 1, 1, 1, 0, 0, 0, 2, 1, 1, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [1, 1, 1, 1, 1, 1, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-]
-const CASTLES = [
-  {
-    x: 9,
-    y: 4,
-    name: 'The Castle of Lord British'
-  },
-  {
-    x: 8,
-    y: 5,
-    name: ''
-  }
 ]
 
 // const GRASS = 0
@@ -36,22 +26,11 @@ const Y_OFFSET = 4
 const X_MAX = 255
 const Y_MAX = 255
 
-const castleAt = (x, y) => {
-  const castles = CASTLES.filter(item => {
-    if (item.x !== x) return false
-    if (item.y !== y) return false
-
-    return true
-  })
-
-  return castles.length > 0 ? castles[0] : null
-}
-
 const location = (x, y, locationType) => ({
   x,
   y,
   locationType,
-  castle: castleAt(x, y)
+  castle: castles.castleAt(x, y)
 })
 
 export default {
@@ -60,28 +39,23 @@ export default {
   X_MAX,
   Y_MAX,
   getLocalMap: (playerX, playerY) => new Promise((resolve) => {
-    const castles = CASTLES.filter(item => {
-      if (item.x < playerX - X_OFFSET) return false
-      if (item.x > playerX + X_OFFSET + 1) return false
-
-      if (item.y < playerY - Y_OFFSET) return false
-      if (item.y > playerY + Y_OFFSET + 1) return false
-
-      return true
-    })
+    const x0 = playerX - X_OFFSET
+    const x1 = playerX + X_OFFSET + 1
+    const y0 = playerY - Y_OFFSET
+    const y1 = playerY + Y_OFFSET + 1
     const localMap = []
-    const minY = Math.max(0, playerY - Y_OFFSET)
-    const maxY = Math.min(WORLD_MAP.length, playerY + Y_OFFSET + 1)
+    const minY = Math.max(0, y0)
+    const maxY = Math.min(WORLD_MAP.length, y1)
     WORLD_MAP.slice(minY, maxY).forEach((row, j) => {
-      const minX = Math.max(0, playerX - X_OFFSET)
-      const maxX = Math.min(row.length, playerX + X_OFFSET + 1)
+      const minX = Math.max(0, x0)
+      const maxX = Math.min(row.length, x1)
       row.slice(minX, maxX).forEach((locationType, i) => {
         localMap.push(location(i + minX, j + minY, locationType))
       })
     })
     resolve({
       localMap,
-      castles
+      castles: castles.castlesIn(x0, x1, y0, y1)
     })
   }),
   canGo: (x, y) => new Promise((resolve) => {

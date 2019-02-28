@@ -22,8 +22,7 @@ const actions = {
       const { location } = params
       if (!location) return commit('addText', 'Huh?')
 
-      console.log(location)
-      const name = "Name"
+      const { name } = location
       return commit('addText', `Entering...<br />${name}`)
     }
 
