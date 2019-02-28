@@ -8,26 +8,17 @@
         xs12
         class="game-map"
       >
-        <template
+        <v-img
           v-for="(item, id) in localMap"
-        >
-          <div
-            :key="`${id}`"
-            class="map-item"
-            :style="`left: ${item.x * 32}px; top: ${item.y * 32}px;`"
-          >
-            <v-img
-              :src="item.image"
-            />
-          </div>
-        </template>
-        <div
+          :key="`${id}`"
+          class="map-item"
+          :style="`left: ${item.x * 32}px; top: ${item.y * 32}px;`"
+          :src="images[item.locationType]"
+        />
+        <v-img
           class="player-character"
-        >
-          <v-img
-            :src="require('@/assets/ultima/pc.png')"
-          />
-        </div>
+          :src="playerImage"
+        />
       </v-flex>
     </v-layout>
     <v-layout
@@ -89,7 +80,13 @@
       CharacterSummary: () => import('@/components/ultima/CharacterSummary')
     },
     data: () => ({
-      image: `${process.env.BASE_URL}games/ultima.jpg`
+      playerImage: `${process.env.BASE_URL}ultima/pc.png`,
+      images: [
+        `${process.env.BASE_URL}ultima/grass.png`,
+        `${process.env.BASE_URL}ultima/water.png`,
+        `${process.env.BASE_URL}ultima/trees.png`,
+        `${process.env.BASE_URL}ultima/castle.png`
+      ]
     }),
     computed: {
       ...mapState('pc', [
