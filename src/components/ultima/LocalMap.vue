@@ -2,10 +2,17 @@
   <div class="game-map">
     <v-img
       v-for="(item, id) in localMap"
-      :key="`${id}`"
+      :key="`location-${id}`"
       class="map-item"
       :style="`left: ${item.x * 32}px; top: ${item.y * 32}px;`"
       :src="images[item.locationType]"
+    />
+    <v-img
+      v-for="(item, id) in castles"
+      :key="`castle-${id}`"
+      class="map-item"
+      :style="`left: ${item.x * 32}px; top: ${item.y * 32}px;`"
+      :src="castleImage"
     />
     <v-img
       class="player-character"
@@ -21,6 +28,7 @@
     name: 'LocalMap',
     data: () => ({
       playerImage: `${process.env.BASE_URL}ultima/pc.png`,
+      castleImage: `${process.env.BASE_URL}ultima/castle.png`,
       images: [
         `${process.env.BASE_URL}ultima/grass.png`,
         `${process.env.BASE_URL}ultima/water.png`,
@@ -30,8 +38,10 @@
       ]
     }),
     computed: {
-      ...mapState('pc', ['location']),
-      ...mapState('view', ['localMap']),
+      ...mapState('view', [
+        'localMap',
+        'castles'
+      ])
     }
   }
 </script>

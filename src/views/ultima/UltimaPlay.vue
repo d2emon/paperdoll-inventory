@@ -5,7 +5,14 @@
       wrap
     >
       <v-flex xs12>
-        <local-map />
+        <div
+          v-if="inCastle"
+        >
+          CASTLE
+        </div>
+        <local-map
+          v-else
+        />
       </v-flex>
     </v-layout>
     <v-layout
@@ -23,25 +30,29 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-btn
-      @click="goDirection('North')"
-    >
+    <v-btn @click="goDirection('North')">
       North
     </v-btn>
-    <v-btn
-      @click="goDirection('East')"
-    >
+    <v-btn @click="goDirection('East')">
       East
     </v-btn>
-    <v-btn
-      @click="goDirection('South')"
-    >
+    <v-btn @click="goDirection('South')">
       South
     </v-btn>
-    <v-btn
-      @click="goDirection('West')"
-    >
+    <v-btn @click="goDirection('West')">
       West
+    </v-btn>
+    <v-btn
+      v-if="location.castle && !inCastle"
+      @click="enterCastle"
+    >
+      Enter
+    </v-btn>
+    <v-btn
+      v-if="inCastle"
+      @click="exitCastle"
+    >
+      Exit
     </v-btn>
   </v-card>
 </template>
@@ -60,25 +71,19 @@
       GameConsole: () => import('@/components/ultima/GameConsole')
     },
     data: () => ({
-      playerImage: `${process.env.BASE_URL}ultima/pc.png`,
-      images: [
-        `${process.env.BASE_URL}ultima/grass.png`,
-        `${process.env.BASE_URL}ultima/water.png`,
-        `${process.env.BASE_URL}ultima/trees.png`,
-        `${process.env.BASE_URL}ultima/grass.png`, // Mountains
-        `${process.env.BASE_URL}ultima/castle.png`
-      ]
+      inCastle: false
     }),
     computed: {
       ...mapState('pc', [
         'ready',
-        'location'
-      ])
+        'position'
+      ]),
+      ...mapState('view', ['location'])
     },
     mounted () {
-      if (!this.ready) this.$router.push('/ultima')
+      if (!this.ready) return this.$router.push('/ultima')
 
-      this.fetchView(this.location)
+      this.fetchView(this.position)
       this.doCommand('')
     },
     methods: {
@@ -86,7 +91,15 @@
       ...mapActions('gameConsole', ['doCommand']),
       goDirection (direction) {
         this.doCommand(direction)
-          .then(() => this.fetchView(this.location))
+          .then(() => this.fetchView(this.position))
+      },
+      enterCastle () {
+        if (!this.location.castle) return
+
+        this.inCastle = true
+      },
+      exitCastle () {
+        this.inCastle = false
       }
     }
   }

@@ -38,7 +38,7 @@ const player = {
   xp: 0,
   coin: 100,
 
-  location: {
+  position: {
     x: START_X,
     y: START_Y
   }
@@ -81,7 +81,7 @@ export default {
       xp: 0,
       coin: 100,
 
-      location: {
+      position: {
         x: START_X,
         y: START_Y
       }

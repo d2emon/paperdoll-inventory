@@ -23,7 +23,7 @@ const state = {
   xp: 0,
   coin: 0,
 
-  location: {},
+  position: {},
 
   error: null
 }
@@ -67,14 +67,14 @@ const mutations = {
     state.xp = character.xp
     state.coin = character.coin
 
-    state.location = character.location
+    state.position = character.position
   },
   setStat: (state, { stat, value }) => { state.stats[stat] = value },
   setRace: (state, race) => { state.race = race },
   setSex: (state, sex) => { state.sex = sex },
   setClass: (state, characterClass) => { state.characterClass = characterClass },
   setName: (state, name) => { state.name = name },
-  setLocation: (state, location) => { state.location = location },
+  setPosition: (state, position) => { state.position = position },
 
   recalcPoints: (state) => {
     state.points = 30
@@ -134,7 +134,7 @@ const actions = {
         food: state.food,
         xp: state.xp,
         coin: state.coin,
-        location: state.location
+        position: state.position
       })
   },
   usePoints: ({ state, commit }, { stat, value }) => {
@@ -151,15 +151,15 @@ const actions = {
     if (directionId === 2) return dispatch('goBy', { x: 0, y: 1 })
     if (directionId === 3) return dispatch('goBy', { x: -1, y: 0 })
   },
-  goBy: ({ state, commit }, location) => {
-    const x = (state.location.x || 0) + location.x
-    const y = (state.location.y || 0) + location.y
+  goBy: ({ state, commit }, position) => {
+    const x = (state.position.x || 0) + position.x
+    const y = (state.position.y || 0) + position.y
     return worldMapService
       .canGo(x, y)
       .then(canGo => {
         if (!canGo) return false
 
-        commit('setLocation', { x, y })
+        commit('setPosition', { x, y })
         commit('eatFood')
         return true
       })
