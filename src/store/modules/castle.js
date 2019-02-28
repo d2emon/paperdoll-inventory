@@ -46,17 +46,11 @@ const actions = {
       .then(({ castle }) => commit('setCastle', castle))
   },
   movePeople: ({ state, commit }) => {
-    state.people
-      .filter(item => item.moving)
-      .forEach(item => {
-        const directionId = Math.floor(Math.random() * 4)
-        const direction = getDirection(directionId)
-        commit('movePerson', {
-          personId: item.personId,
-          x: direction.x + item.x,
-          y: direction.y + item.y
-        })
-      })
+    if (!state.castle) return
+
+    return castleService
+      .movePeople(state.castle.castleId)
+      .then(({ castle }) => commit('setCastle', castle))
   }
 }
 

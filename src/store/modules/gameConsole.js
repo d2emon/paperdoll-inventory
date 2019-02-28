@@ -9,19 +9,25 @@ const mutations = {
 }
 
 const actions = {
+  wrongCommand: ({ commit }) => commit('addText', 'Huh?'),
+
   doCommand: ({ commit, dispatch }, { command, ...params }) => {
     if (command === 'Go') {
       const { direction } = params
-      if (!direction) return commit('addText', 'Huh?')
+      if (!direction) return dispatch('wrongCommand')
 
       dispatch('pc/goDirection', direction, { root: true })
-      dispatch('castle/movePeople', null, { root: true })
-      return commit('addText', direction)
+        .then(result => {
+          if (!result) return dispatch('wrongCommand')
+
+          dispatch('castle/movePeople', null, { root: true })
+          return commit('addText', direction)
+        })
     }
 
     if (command === 'Enter') {
       const { castle } = params
-      if (!castle) return commit('addText', 'Huh?')
+      if (!castle) return dispatch('wrongCommand')
 
       dispatch('castle/fetchCastle', castle.castleId, { root: true })
       dispatch('pc/enterCastle', castle, { root: true })
@@ -30,14 +36,14 @@ const actions = {
 
     if (command === 'Exit') {
       const { castle } = params
-      if (!castle) return commit('addText', 'Huh?')
+      if (!castle) return dispatch('wrongCommand')
 
       dispatch('castle/fetchCastle', null, { root: true })
       dispatch('pc/exitCastle', castle, { root: true })
       return commit('addText', `Exiting...`)
     }
 
-    commit('addText', 'Huh?')
+    return dispatch('wrongCommand')
   }
 }
 

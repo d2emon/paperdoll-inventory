@@ -75,21 +75,5 @@ export default {
 
     return resolve(true)
   }),
-  canGoCastle: (x, y) => new Promise((resolve) => {
-    if (x < 0) return resolve(false)
-    if (x > X_MAX_CASTLE) return resolve(false)
-
-    if (y < 0) return resolve(false)
-    if (y > Y_MAX_CASTLE) return resolve(false)
-
-    /*
-    const location = WORLD_MAP[y][x]
-    if (location === WATER) return resolve(false)
-    if (location === TREES) return resolve(false)
-    if (location === MOUNTAINS) return resolve(false)
-    */
-
-    return resolve(true)
-  }),
   getLocation: (x, y) => new Promise(resolve => resolve({ location: location(x, y, WORLD_MAP[y][x]) }))
 }

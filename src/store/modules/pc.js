@@ -1,5 +1,6 @@
 import pcService from '../../services/pc'
 import worldMapService from '@/services/worldMap'
+import castleService from '@/services/castles'
 
 const state = {
   ready: false,
@@ -159,11 +160,10 @@ const actions = {
     const y = (state.position.y || 0) + position.y
 
     const canGo = state.castleId
-      ? worldMapService.canGoCastle
-      : worldMapService.canGo
+      ? castleService.canGo(state.castleId, x, y)
+      : worldMapService.canGo(x, y)
 
-    return canGo(x, y)
-      .then(result => {
+    return canGo.then(result => {
         if (!result) return false
 
         commit('setPosition', { x, y })
