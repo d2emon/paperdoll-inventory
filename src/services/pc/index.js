@@ -15,6 +15,8 @@ const CLASSES = [
   { id: 'c', name: 'Wizard' },
   { id: 'd', name: 'Thief' }
 ]
+const START_X = 16
+const START_Y = 5
 
 const player = {
   character_id: 1,
@@ -36,7 +38,10 @@ const player = {
   xp: 0,
   coin: 100,
 
-  location: { x: 10, y: 5 }
+  location: {
+    x: START_X,
+    y: START_Y
+  }
 }
 
 const saved = [
@@ -76,7 +81,10 @@ export default {
       xp: 0,
       coin: 100,
 
-      location: { x: 10, y: 5 }
+      location: {
+        x: START_X,
+        y: START_Y
+      }
     }
   })),
 

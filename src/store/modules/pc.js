@@ -82,19 +82,7 @@ const mutations = {
     })
   },
 
-  goBy: (state, location) => {
-    const prepare = (coord, movement, maxValue) => {
-      coord = (coord || 0) + movement
-      if (coord < 0) return 0
-      if (coord > maxValue) return maxValue
-      return coord
-    }
-
-    state.location = {
-      x: prepare(state.location.x, location.x, worldMapService.X_MAX),
-      y: prepare(state.location.y, location.y, worldMapService.Y_MAX)
-    }
-  }
+  setLocation: (state, location) => { state.location = location }
 }
 
 const actions = {
@@ -156,11 +144,23 @@ const actions = {
     commit('setStat', { stat, value })
     commit('recalcPoints')
   },
-  goDirection: ({ state, commit }, directionId) => {
-    if (directionId === 0) return commit('goBy', { x: 0, y: -1 })
-    if (directionId === 1) return commit('goBy', { x: 1, y: 0 })
-    if (directionId === 2) return commit('goBy', { x: 0, y: 1 })
-    if (directionId === 3) return commit('goBy', { x: -1, y: 0 })
+  goDirection: ({ state, dispatch }, directionId) => {
+    if (directionId === 0) return dispatch('goBy', { x: 0, y: -1 })
+    if (directionId === 1) return dispatch('goBy', { x: 1, y: 0 })
+    if (directionId === 2) return dispatch('goBy', { x: 0, y: 1 })
+    if (directionId === 3) return dispatch('goBy', { x: -1, y: 0 })
+  },
+  goBy: ({ state, commit }, location) => {
+    const x = (state.location.x || 0) + location.x
+    const y = (state.location.y || 0) + location.y
+    return worldMapService
+      .canGo(x, y)
+      .then(canGo => {
+        if (!canGo) return false
+
+        commit('setLocation', { x, y })
+        return true
+      })
   }
 }
 
