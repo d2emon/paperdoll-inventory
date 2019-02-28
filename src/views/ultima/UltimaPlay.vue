@@ -84,19 +84,18 @@
       if (!this.ready) return this.$router.push('/ultima')
 
       this.fetchView(this.position)
-      this.doCommand('')
+      this.doCommand({})
     },
     methods: {
       ...mapActions('view', ['fetchView']),
       ...mapActions('gameConsole', ['doCommand']),
       goDirection (direction) {
-        this.doCommand(direction)
+        this.doCommand({ command: 'Go', direction })
           .then(() => this.fetchView(this.position))
       },
       enterCastle () {
-        if (!this.location.castle) return
-
-        this.inCastle = true
+        this.doCommand({ command: 'Enter', location: this.location.castle })
+          .then(() => { this.inCastle = true })
       },
       exitCastle () {
         this.inCastle = false

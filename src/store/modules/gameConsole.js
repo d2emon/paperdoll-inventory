@@ -1,10 +1,3 @@
-const DIRECTIONS = [
-  'North',
-  'East',
-  'South',
-  'West'
-]
-
 const state = {
   text: []
 }
@@ -16,17 +9,23 @@ const mutations = {
 }
 
 const actions = {
-  doCommand: ({ state, commit, dispatch }, command) => {
-    let isDirection = false
-    DIRECTIONS.forEach((direction, directionId) => {
-      if (command !== direction) return
+  doCommand: ({ commit, dispatch }, { command, ...params }) => {
+    if (command === 'Go') {
+      const { direction } = params
+      if (!direction) return commit('addText', 'Huh?')
 
-      isDirection = true
-      dispatch('pc/goDirection', directionId, { root: true })
+      dispatch('pc/goDirection', direction, { root: true })
       return commit('addText', direction)
-    })
+    }
 
-    if (isDirection) return
+    if (command === 'Enter') {
+      const { location } = params
+      if (!location) return commit('addText', 'Huh?')
+
+      console.log(location)
+      const name = "Name"
+      return commit('addText', `Entering...<br />${name}`)
+    }
 
     commit('addText', 'Huh?')
   }

@@ -146,10 +146,10 @@ const actions = {
     commit('recalcPoints')
   },
   goDirection: ({ state, dispatch }, directionId) => {
-    if (directionId === 0) return dispatch('goBy', { x: 0, y: -1 })
-    if (directionId === 1) return dispatch('goBy', { x: 1, y: 0 })
-    if (directionId === 2) return dispatch('goBy', { x: 0, y: 1 })
-    if (directionId === 3) return dispatch('goBy', { x: -1, y: 0 })
+    if (directionId === 'North') return dispatch('goBy', { x: 0, y: -1 })
+    if (directionId === 'East') return dispatch('goBy', { x: 1, y: 0 })
+    if (directionId === 'South') return dispatch('goBy', { x: 0, y: 1 })
+    if (directionId === 'West') return dispatch('goBy', { x: -1, y: 0 })
   },
   goBy: ({ state, commit }, position) => {
     const x = (state.position.x || 0) + position.x

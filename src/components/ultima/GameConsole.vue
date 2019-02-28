@@ -3,8 +3,8 @@
     <p
       v-for="(s, id) in text"
       :key="id"
+      v-html="s"
     >
-      {{ s }}
     </p>
   </div>
 </template>
