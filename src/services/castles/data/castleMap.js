@@ -1,3 +1,31 @@
+const guard = (x, y) => ({
+  name: 'Guard',
+  x,
+  y,
+  moving: false,
+})
+
+const lord = (x, y) => ({
+  name: 'Lord',
+  x,
+  y,
+  moving: false,
+})
+
+const guest = (x, y) => ({
+  name: 'Guest',
+  x,
+  y,
+  moving: true,
+})
+
+const prisoner = (x, y) => ({
+  name: 'Prisoner',
+  x,
+  y,
+  moving: true,
+})
+
 export const CASTLES = [
   {
     castleId: 1,
@@ -25,15 +53,15 @@ export const CASTLES = [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     ],
     people: [
-      { x: 1, y: 6 },
-      { x: 17, y: 6 },
-      { x: 17, y: 11 },
-      { x: 25, y: 7 },
-      { x: 25, y: 12 },
-      { x: 33, y: 4 },
-      { x: 35, y: 6 },
-      { x: 35, y: 12 },
-      { x: 36, y: 9 }
+      guard(1,6),
+      guard(17,6),
+      guard(17,11),
+      guard(25, 7),
+      guard(25, 12),
+      lord(33, 4),
+      guest(35, 6),
+      prisoner(35, 12),
+      guard(36, 9)
     ]
   },
   {

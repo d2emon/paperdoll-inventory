@@ -15,6 +15,7 @@ const actions = {
       if (!direction) return commit('addText', 'Huh?')
 
       dispatch('pc/goDirection', direction, { root: true })
+      dispatch('castle/movePeople', null, { root: true })
       return commit('addText', direction)
     }
 
