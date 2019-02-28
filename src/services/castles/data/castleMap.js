@@ -2,28 +2,29 @@ const guard = (x, y) => ({
   name: 'Guard',
   x,
   y,
-  moving: false,
+  moving: false
 })
 
 const lord = (x, y) => ({
   name: 'Lord',
   x,
   y,
-  moving: false,
+  moving: false
 })
 
-const guest = (x, y) => ({
-  name: 'Guest',
+const guest = (x, y, name, options) => ({
+  name,
   x,
   y,
   moving: true,
+  ...options
 })
 
 const prisoner = (x, y) => ({
   name: 'Prisoner',
   x,
   y,
-  moving: true,
+  moving: true
 })
 
 export const CASTLES = [
@@ -59,7 +60,9 @@ export const CASTLES = [
       guard(25, 7),
       guard(25, 12),
       lord(33, 4),
-      guest(35, 6),
+      guest(35, 6, 'Gwino the jester', {
+        sing: ['I\'ve got the key!']
+      }),
       prisoner(35, 12),
       guard(36, 9)
     ]

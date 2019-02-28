@@ -1,6 +1,8 @@
 import { CASTLES } from './data/castleMap'
 import { getDirection } from '@/helpers/directions'
 
+const messages = []
+
 const getCastleMap = castleMap => {
   if (!castleMap) return []
 
@@ -18,8 +20,36 @@ const getCastleMap = castleMap => {
 }
 
 const npc = ({ ...data }) => ({
-  ...data
+  ...data,
 })
+
+const performAction = (person, castleId) => {
+  const actionsCount = person.sing && person.sing.length > 0
+    ? 5
+    : 4
+  const actionId = Math.floor(Math.random() * actionsCount)
+
+  if (actionId < 4) {
+    const direction = getDirection(actionId)
+    const x = direction.x + person.x
+    const y = direction.y + person.y
+    if (!canGo(castleId, x, y)) return;
+
+    person.x = x
+    person.y = y
+    return person
+  }
+
+  if (actionId == 4) {
+    if (!person.sing || person.sing.length <= 0) return person
+
+    const songId = Math.floor(Math.random() * person.sing.length)
+    const song = person.sing[songId]
+    messages.push(`${person.name} sings:<br />${song}`)
+
+    return person
+  }
+}
 
 const castle = ({ castleMap, people, ...data }) => {
   return {
@@ -71,16 +101,7 @@ export default {
   movePeople: castleId => new Promise(resolve => {
     CASTLES[castleId - 1].people
       .filter(item => item.moving)
-      .forEach(item => {
-        const directionId = Math.floor(Math.random() * 4)
-        const direction = getDirection(directionId)
-        const x = direction.x + item.x
-        const y = direction.y + item.y
-        if (!canGo(castleId, x, y)) return;
-
-        item.x = x
-        item.y = y
-      })
+      .forEach(item => performAction(item, castleId))
     resolve({ castle: castle(CASTLES[castleId - 1]) })
   })
 }
