@@ -4,21 +4,8 @@
       row
       wrap
     >
-      <v-flex
-        xs12
-        class="game-map"
-      >
-        <v-img
-          v-for="(item, id) in localMap"
-          :key="`${id}`"
-          class="map-item"
-          :style="`left: ${item.x * 32}px; top: ${item.y * 32}px;`"
-          :src="images[item.locationType]"
-        />
-        <v-img
-          class="player-character"
-          :src="playerImage"
-        />
+      <v-flex xs12>
+        <local-map />
       </v-flex>
     </v-layout>
     <v-layout
@@ -26,21 +13,12 @@
       wrap
     >
       <v-flex xs9>
-        <v-card
-          height="175px"
-          class="game-console"
-        >
-          <p
-            v-for="(s, id) in text"
-            :key="id"
-            v-text="s"
-          />
+        <v-card height="175px">
+          <game-console />
         </v-card>
       </v-flex>
       <v-flex xs3>
-        <v-card
-          height="175px"
-        >
+        <v-card height="175px">
           <character-summary />
         </v-card>
       </v-flex>
@@ -77,7 +55,9 @@
   export default {
     name: 'UltimaPlay',
     components: {
-      CharacterSummary: () => import('@/components/ultima/CharacterSummary')
+      CharacterSummary: () => import('@/components/ultima/CharacterSummary'),
+      LocalMap: () => import('@/components/ultima/LocalMap'),
+      GameConsole: () => import('@/components/ultima/GameConsole')
     },
     data: () => ({
       playerImage: `${process.env.BASE_URL}ultima/pc.png`,
@@ -93,9 +73,7 @@
       ...mapState('pc', [
         'ready',
         'location'
-      ]),
-      ...mapState('view', ['localMap']),
-      ...mapState('gameConsole', ['text'])
+      ])
     },
     mounted () {
       if (!this.ready) this.$router.push('/ultima')
@@ -115,33 +93,4 @@
 </script>
 
 <style scoped>
-.game-map {
-  background-color: black;
-  height: 300px;
-}
-
-.game-console {
-  background-color: black;
-  color: white;
-  height: 175px;
-  overflow: auto;
-}
-
-.map-item {
-  width: 32px;
-  height: 32px;
-  overflow: hidden;
-  position: absolute;
-  z-index: 0;
-}
-
-.player-character {
-  width: 32px;
-  height: 32px;
-  overflow: hidden;
-  position: absolute;
-  top: 128px;
-  left: 288px;
-  z-index: 10;
-}
 </style>
