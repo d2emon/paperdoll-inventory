@@ -1,4 +1,4 @@
-import castles from './castles'
+import castles from '../castles'
 
 const WORLD_MAP = [
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -33,7 +33,7 @@ const location = (x, y, locationType) => ({
   x,
   y,
   locationType,
-  castle: castles.castleAt(x, y)
+  castle: castles.getCastleAt(x, y)
 })
 
 export default {
@@ -58,7 +58,7 @@ export default {
     })
     resolve({
       localMap,
-      castles: castles.castlesIn(x0, x1, y0, y1)
+      castles: castles.getCastlesIn(x0, x1, y0, y1)
     })
   }),
   canGo: (x, y) => new Promise((resolve) => {
@@ -91,6 +91,5 @@ export default {
 
     return resolve(true)
   }),
-  getLocation: (x, y) => new Promise(resolve => resolve({ location: location(x, y, WORLD_MAP[y][x]) })),
-  getCastle: castleId => new Promise(resolve => resolve({ castle: castles.getCastle(castleId) }))
+  getLocation: (x, y) => new Promise(resolve => resolve({ location: location(x, y, WORLD_MAP[y][x]) }))
 }

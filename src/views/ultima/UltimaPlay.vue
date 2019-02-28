@@ -6,7 +6,7 @@
     >
       <v-flex xs12>
         <castle-map
-          v-if="inCastle"
+          v-if="castleId"
         />
         <local-map
           v-else
@@ -75,7 +75,8 @@
     computed: {
       ...mapState('pc', [
         'ready',
-        'position'
+        'position',
+        'castleId'
       ]),
       ...mapState('view', ['location'])
     },

@@ -22,12 +22,17 @@ const actions = {
       const { castle } = params
       if (!castle) return commit('addText', 'Huh?')
 
-      dispatch('view/fetchCastle', castle.castleId, { root: true })
+      dispatch('castle/fetchCastle', castle.castleId, { root: true })
+      dispatch('pc/enterCastle', castle, { root: true })
       return commit('addText', `Entering...<br />${castle.name}`)
     }
 
     if (command === 'Exit') {
-      commit('view/setCastle', null, { root: true })
+      const { castle } = params
+      if (!castle) return commit('addText', 'Huh?')
+
+      dispatch('castle/fetchCastle', null, { root: true })
+      dispatch('pc/exitCastle', castle, { root: true })
       return commit('addText', `Exiting...`)
     }
 

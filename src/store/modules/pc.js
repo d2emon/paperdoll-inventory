@@ -23,9 +23,8 @@ const state = {
   xp: 0,
   coin: 0,
 
-  inCastle: false,
+  castleId: 0,
   position: {},
-  castlePosition: {},
 
   error: null
 }
@@ -78,7 +77,7 @@ const mutations = {
   setName: (state, name) => { state.name = name },
   setPosition: (state, position) => { state.position = position },
 
-  setInCastle: (state, inCastle) => { state.inCastle = inCastle },
+  setCastle: (state, castleId) => { state.castleId = castleId },
 
   recalcPoints: (state) => {
     state.points = 30
@@ -159,7 +158,7 @@ const actions = {
     const x = (state.position.x || 0) + position.x
     const y = (state.position.y || 0) + position.y
 
-    const canGo = state.inCastle
+    const canGo = state.castleId
       ? worldMapService.canGoCastle
       : worldMapService.canGo
 
@@ -172,11 +171,17 @@ const actions = {
         return true
       })
   },
-  enterCastle: ({ commit }, castle) => {
+  enterCastle: ({ commit, dispatch }, castle) => {
     if (!castle) return
 
-    commit('setInCastle', true)
+    commit('setCastle', castle.castleId)
     commit('setPosition', castle.entrance)
+  },
+  exitCastle: ({ commit }, castle) => {
+    commit('setCastle', null)
+
+    if (!castle) return
+    commit('setPosition', { x: castle.x, y: castle.y })
   }
 }
 
