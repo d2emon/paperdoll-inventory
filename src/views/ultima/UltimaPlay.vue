@@ -9,21 +9,17 @@
         class="game-map"
       >
         <template
-          v-for="(row, j) in localMap"
+          v-for="(item, id) in localMap"
         >
-          <template
-            v-for="(col, i) in row"
+          <div
+            :key="`${id}`"
+            class="map-item"
+            :style="`left: ${item.x * 32}px; top: ${item.y * 32}px;`"
           >
-            <div
-              :key="`div-${i}-${j}`"
-              class="map-item"
-              :style="`left: ${col.x * 32}px; top: ${col.y * 32}px;`"
-            >
-              <v-img
-                :src="col.image"
-              />
-            </div>
-          </template>
+            <v-img
+              :src="item.image"
+            />
+          </div>
         </template>
         <div
           class="player-character"
@@ -32,25 +28,6 @@
             :src="require('@/assets/ultima/pc.png')"
           />
         </div>
-        <!-- v-layout
-          v-for="(row, j) in localMap"
-          :key="`row-${j}`"
-          row
-        >
-          <v-flex
-            v-for="(col, i) in row"
-            :key="`col-${i}-${j}`"
-          >
-            <v-img
-              v-if="(i === 10) && (j === 5)"
-              :src="require('@/assets/ultima/pc.png')"
-            />
-            <v-img
-              v-else-if="col.image"
-              :src="col.image"
-            />
-          </v-flex>
-        </v-layout -->
       </v-flex>
     </v-layout>
     <v-layout
@@ -78,22 +55,22 @@
       </v-flex>
     </v-layout>
     <v-btn
-      @click="doCommand('North')"
+      @click="goDirection('North')"
     >
       North
     </v-btn>
     <v-btn
-      @click="doCommand('East')"
+      @click="goDirection('East')"
     >
       East
     </v-btn>
     <v-btn
-      @click="doCommand('South')"
+      @click="goDirection('South')"
     >
       South
     </v-btn>
     <v-btn
-      @click="doCommand('West')"
+      @click="goDirection('West')"
     >
       West
     </v-btn>
@@ -115,17 +92,26 @@
       image: `${process.env.BASE_URL}games/ultima.jpg`
     }),
     computed: {
-      ...mapState('pc', ['location']),
+      ...mapState('pc', [
+        'ready',
+        'location'
+      ]),
       ...mapState('view', ['localMap']),
       ...mapState('gameConsole', ['text'])
     },
     mounted () {
-      this.fetchView()
+      if (!this.ready) this.$router.push('/ultima')
+
+      this.fetchView(this.location)
       this.doCommand('')
     },
     methods: {
       ...mapActions('view', ['fetchView']),
-      ...mapActions('gameConsole', ['doCommand'])
+      ...mapActions('gameConsole', ['doCommand']),
+      goDirection (direction) {
+        this.doCommand(direction)
+          .then(() => this.fetchView(this.location))
+      }
     }
   }
 </script>

@@ -11,7 +11,7 @@ const mutations = {
 }
 
 const actions = {
-  fetchView: ({ state, commit }) => {
+  fetchView: ({ state, commit }, { x, y }) => {
     const getImage = (locationType) => {
       if (locationType === 0) return require('@/assets/ultima/grass.png')
       if (locationType === 1) return require('@/assets/ultima/water.png')
@@ -20,15 +20,15 @@ const actions = {
     }
 
     return worldMapService
-      .getLocalMap(0, 0)
+      .getLocalMap(x, y)
       .then(({ localMap }) => {
-        commit('setView', localMap.map((row) => {
-          return row.map(item => {
-            return {
-              ...item,
-              image: getImage(item.locationType)
-            }
-          })
+        commit('setView', localMap.map(item => {
+          return {
+            ...item,
+            x: item.x + worldMapService.X_OFFSET - x,
+            y: item.y + worldMapService.Y_OFFSET - y,
+            image: getImage(item.locationType)
+          }
         }))
       })
   }

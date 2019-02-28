@@ -1,6 +1,9 @@
 import pcService from '../../services/pc'
+import worldMapService from '@/services/worldMap'
 
 const state = {
+  ready: false,
+
   characters: [],
 
   races: [],
@@ -37,6 +40,13 @@ const mutations = {
   setClasses: (state, classes) => { state.classes = classes },
 
   setCharacter: (state, character) => {
+    if (!character) {
+      state.ready = false
+      return
+    }
+
+    state.ready = character.character_id > 0
+
     state.name = character.name
 
     state.stats = {
@@ -73,11 +83,16 @@ const mutations = {
   },
 
   goBy: (state, location) => {
-    const x = state.location.x || 0
-    const y = state.location.y || 0
+    const prepare = (coord, movement, maxValue) => {
+      coord = (coord || 0) + movement
+      if (coord < 0) return 0
+      if (coord > maxValue) return maxValue
+      return coord
+    }
+
     state.location = {
-      x: x + location.x,
-      y: y + location.y
+      x: prepare(state.location.x, location.x, worldMapService.X_MAX),
+      y: prepare(state.location.y, location.y, worldMapService.Y_MAX)
     }
   }
 }
@@ -114,7 +129,6 @@ const actions = {
       .catch(e => commit('setError', e.message))
   },
   loadCharacter: ({ state, commit }, characterId) => {
-    console.log(characterId)
     return pcService
       .getCharacter(characterId)
       .then(({ character }) => commit('setCharacter', character))

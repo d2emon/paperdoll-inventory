@@ -17,7 +17,7 @@ const CLASSES = [
 ]
 
 const player = {
-  character_id: 0,
+  character_id: 1,
   name: 'Kikoskia',
 
   strength: 25,
@@ -80,10 +80,10 @@ export default {
     }
   })),
 
-  getCharacter: (characterId) => new Promise((resolve) => resolve({ character: saved[characterId] })),
+  getCharacter: (characterId) => new Promise((resolve) => resolve({ character: saved[characterId - 1] })),
 
   saveCharacter: (character) => new Promise((resolve) => {
-    character.character_id = saved.length
+    character.character_id = saved.length + 1
     saved.push(character)
     resolve({ character_id: character.character_id })
   })
