@@ -1,0 +1,6 @@
+{
+  "a": {"name": "Fighter"},
+  "b": {"name": "Cleric"},
+  "c": {"name": "Wizard"},
+  "d": {"name": "Thief"}
+}

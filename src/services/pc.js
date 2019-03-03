@@ -1,4 +1,4 @@
-import DB from '../db'
+import DB from './db'
 
 export default {
   fetchRaces: DB.saved.fetchRaces,

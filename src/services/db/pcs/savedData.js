@@ -1,6 +1,15 @@
-import RACES from "./races";
-import SEXES from "./sexes";
-import CLASSES from "./classes";
+import RACES from "./racesData.json";
+import SEXES from "./sexesData.json";
+import CLASSES from "./classesData.json";
+
+const prepare = items => {
+  const data = []
+  Object.keys(items)
+    .forEach(id => {
+      data[id] = { id, ...items[id] }
+    })
+  return data
+}
 
 const player = {
   id: 1,
@@ -13,9 +22,9 @@ const player = {
   wisdom: 10,
   intelligence: 10,
 
-  race: RACES[0],
-  sex: SEXES[0],
-  characterClass: CLASSES[0],
+  race: prepare(RACES)['a'],
+  sex: prepare(SEXES)['a'],
+  characterClass: prepare(CLASSES)['a'],
 
   hp: 150,
   food: 200,

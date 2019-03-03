@@ -4,9 +4,9 @@ import {
   fill
 } from '../helpers'
 
-import RACES from "../pcs/races";
-import SEXES from "../pcs/sexes";
-import CLASSES from "../pcs/classes";
+import RACES from "../pcs/racesData.json";
+import SEXES from "../pcs/sexesData.json";
+import CLASSES from "../pcs/classesData.json";
 import init from "../pcs/savedData";
 
 const NO_CHARACTERS_ERROR = 'There are no Ultima I characters saved on this disk.'
@@ -41,15 +41,18 @@ const Item = (record) => ({
   ...record
 })
 
+const prepare = items => Object.keys(items)
+  .map(id => ({ id, ...items[id] }))
+
 fill(init, Item, DATA);
 // (function () { fill(init, Item, DATA); }())
 
 export default {
   ...crud(Item, 'character', DATA),
 
-  fetchRaces: () => new Promise(resolve => resolve({ races: RACES })),
-  fetchSexes: () => new Promise(resolve => resolve({ sexes: SEXES })),
-  fetchClasses: () => new Promise(resolve => resolve({ classes: CLASSES })),
+  fetchRaces: () => new Promise(resolve => resolve({ races: prepare(RACES) })),
+  fetchSexes: () => new Promise(resolve => resolve({ sexes: prepare(SEXES) })),
+  fetchClasses: () => new Promise(resolve => resolve({ classes: prepare(CLASSES) })),
 
   fetchSaved: () => new Promise((resolve) => {
     if (Object.keys(DATA).length <= 0)
@@ -60,7 +63,6 @@ export default {
   }),
   saveCharacter: character => new Promise((resolve) => {
     const item = addRecord(character, DATA)
-    console.log(character, item)
-    resolve({ character_id: item.character_id })
+    resolve({ id: item.id })
   })
 }
