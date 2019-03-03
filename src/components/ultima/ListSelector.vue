@@ -6,7 +6,7 @@
     <v-card-title
       v-if="title"
     >
-      <h3>{{ title }}</h3>>
+      <h3>{{ title }}</h3>
     </v-card-title>
 
     <v-list>

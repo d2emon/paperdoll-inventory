@@ -1,7 +1,5 @@
-import locationsData from "./cities/locations";
-import init from "./cities/citiesData";
-
-const makeQuery = records => new Promise(resolve => resolve([...records]))
+const makeQuery = records => new Promise(resolve => resolve(Object.keys(records)
+  .map(id => records[id])))
 const filterLocation = ({ x, y }) => item => {
   if (item.x !== x) return false
   if (item.y !== y) return false
@@ -20,13 +18,12 @@ export const  addRecord = (record, records) => {
     id: records.length + 1,
     ...record
   }
-  records.push(item)
+  records[item.id] = item
   return item
 }
 
 export const getRecord = (id, records) => {
-  if (id <= 0 || id >= records.length) return null
-
+  console.log(id, records)
   return records[id]
 }
 
@@ -71,4 +68,5 @@ export const crud = (table, name, records) => {
   }
 }
 
-export const fill = (table, data) => Object.keys(data).forEach(id => table({ id, ...data[id]}))
+export const fill = (data, table, records) => Object.keys(data)
+  .forEach(id => addRecord(table({ id, ...data[id]}), records))

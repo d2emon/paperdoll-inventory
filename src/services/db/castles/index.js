@@ -34,7 +34,7 @@ const Item = ({
   ...record
 }, DATA)
 
-const passable = (castle, location) => new Promise(resolve => Promise.all([
+const passable = (castle, location) => Promise.all([
     selectRecord({ location }, castle.locations),
     selectRecord({ location }, castle.characters)
   ])

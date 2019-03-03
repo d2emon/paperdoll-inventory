@@ -1,8 +1,8 @@
-import DB from '../db'
-import { getDirection } from '@/helpers/directions'
-import actions from '../db/actions'
+// import DB from './db'
+// import actions from './db/actions'
 
 export default {
+  /*
   fetchCastle: DB.castles.getItem,
 
   getCastleAt: (x, y) => DB.castles.selectItem({ location: { x, y } }),
@@ -10,8 +10,9 @@ export default {
 
   canGo: (id, x, y) => DB.castles.canGo(id, x, y),
   movePeople: castleId => DB.castles.getItem(castleId)
-      .then(castle => {
-        actions.onTick(castle)
-        return castle
-      })
+    .then(castle => {
+      actions.onTick(castle)
+      return castle
+    })
+  */
 }

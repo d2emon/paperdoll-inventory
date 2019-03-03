@@ -1,12 +1,12 @@
-[
-  {
+{
+  "1":   {
     "title": "Dungeon Master",
     "link": "/dungeon-master",
     "image": "ultima.jpg"
   },
-  {
+  "2": {
     "title": "Ultima",
     "link": "/ultima",
     "image": "ultima.jpg"
   }
-]
+}

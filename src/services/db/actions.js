@@ -1,5 +1,6 @@
 import DB from './index'
 import { selectRecord } from './helpers'
+import { getDirection } from '@/helpers/directions'
 
 const doWalk = direction => character => new Promise(resolve => {
   const x = direction.x + character.x

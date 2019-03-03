@@ -37,7 +37,7 @@
         'loadCharacter'
       ]),
       onSelect (item) {
-        this.loadCharacter(item.character_id)
+        this.loadCharacter(item.id)
         this.$router.push('/ultima/play')
       }
     }

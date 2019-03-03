@@ -42,12 +42,14 @@ const mutations = {
   setClasses: (state, classes) => { state.classes = classes },
 
   setCharacter: (state, character) => {
+    console.log(character)
     if (!character) {
       state.ready = false
       return
     }
 
-    state.ready = character.character_id > 0
+    console.log(character)
+    state.ready = character.id > 0
 
     state.name = character.name
 
@@ -70,6 +72,7 @@ const mutations = {
     state.coin = character.coin
 
     state.position = character.position
+    console.log(state)
   },
   setStat: (state, { stat, value }) => { state.stats[stat] = value },
   setRace: (state, race) => { state.race = race },
@@ -91,37 +94,28 @@ const mutations = {
 }
 
 const actions = {
-  fetchRaces: ({ state, commit }) => {
-    return pcService
-      .fetchRaces()
-      .then(({ races }) => commit('setRaces', races))
-  },
-  fetchSexes: ({ state, commit }) => {
-    return pcService
-      .fetchSexes()
-      .then(({ sexes }) => commit('setSexes', sexes))
-  },
-  fetchClasses: ({ state, commit }) => {
-    return pcService
-      .fetchClasses()
-      .then(({ classes }) => commit('setClasses', classes))
-  },
+  fetchRaces: ({ state, commit }) => pcService
+    .fetchRaces()
+    .then(({ races }) => commit('setRaces', races)),
+  fetchSexes: ({ state, commit }) => pcService
+    .fetchSexes()
+    .then(({ sexes }) => commit('setSexes', sexes)),
+  fetchClasses: ({ state, commit }) => pcService
+    .fetchClasses()
+    .then(({ classes }) => commit('setClasses', classes)),
 
-  createCharacter: ({ commit }) => {
-    return pcService
-      .addCharacter()
-      .then(({ character }) => {
-        commit('setCharacter', character)
-        commit('recalcPoints')
-      })
-  },
-  fetchCharacters: ({ state, commit }) => {
-    return pcService
-      .fetchCharacters()
-      .then(({ characters }) => commit('setCharacters', characters))
-      .catch(e => commit('setError', e.message))
-  },
+  createCharacter: ({ commit }) => pcService
+    .addCharacter()
+    .then(({ character }) => {
+      commit('setCharacter', character)
+      commit('recalcPoints')
+    }),
+  fetchCharacters: ({ state, commit }) => pcService
+    .fetchCharacters()
+    .then(({ characters }) => commit('setCharacters', characters))
+    .catch(e => commit('setError', e.message)),
   loadCharacter: ({ state, commit }, characterId) => {
+    console.log(characterId);
     return pcService
       .getCharacter(characterId)
       .then(({ character }) => commit('setCharacter', character))
