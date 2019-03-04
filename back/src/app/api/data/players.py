@@ -95,8 +95,11 @@ Kikoskia = Player(
     agility=20,
     stamina=15,
 
-    race_id=0,
-    sex_id=0,
-    class_id=0,
+    race_id=1,
+    sex_id=1,
+    class_id=1,
+
+    x=9,
+    y=4,
 )
 Kikoskia.save()

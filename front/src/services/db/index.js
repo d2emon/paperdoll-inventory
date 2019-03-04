@@ -2,7 +2,6 @@
 // import Character from './characters'
 // import City from './cities'
 import games from './games'
-import saved from './pcs'
 
 export default {
   // castles,
@@ -12,6 +11,4 @@ export default {
 
   // locations: [],
   // messages: [],
-
-  saved,
 }

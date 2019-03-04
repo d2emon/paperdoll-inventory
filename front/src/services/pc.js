@@ -1,24 +1,12 @@
-import DB from './db'
-import axios from 'axios'
-
-const Axios = axios.create({
-  baseURL: 'http://localhost:5000/api',
-})
+import Api from './api'
 
 export default {
-  fetchRaces: () => Axios.get('races')
-    .then(({ data }) => data),
-  fetchSexes: () => Axios.get('sexes')
-    .then(({ data }) => data),
-  fetchClasses: () => Axios.get('classes')
-    .then(({ data }) => data),
+  fetchRaces: () => Api.get('races').then(({ data }) => data),
+  fetchSexes: () => Api.get('sexes').then(({ data }) => data),
+  fetchClasses: () => Api.get('classes').then(({ data }) => data),
 
-  fetchCharacters: () => Axios.get('characters')
-    .then(({ data }) => data),
-  addCharacter: () => Axios.get('character/new')
-    .then(({ data }) => data),
-  getCharacter: id => Axios.get('character', { params: { id } })
-    .then(({ data }) => data),
-  saveCharacter: (character) => Axios.put('characters', { character })
-    .then(({ data }) => data),
+  fetchCharacters: () => Api.get('characters').then(({ data }) => data),
+  addCharacter: () => Api.get('character/new').then(({ data }) => data),
+  getCharacter: id => Api.get('character', { params: { id } }).then(({ data }) => data),
+  saveCharacter: character => Api.put('characters', { character }).then(({ data }) => data),
 }
