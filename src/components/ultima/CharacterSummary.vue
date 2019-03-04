@@ -1,5 +1,8 @@
 <template>
-  <v-list dense>
+  <v-list
+    dense
+    class="character-summary"
+  >
     <v-list-tile>
       <v-list-tile-content>Hits:</v-list-tile-content>
       <v-list-tile-content class="align-end">{{hp}}</v-list-tile-content>
@@ -36,5 +39,9 @@
 </script>
 
 <style scoped>
+  .character-summary {
+    background-color: black;
+    color: white;
+  }
 
 </style>
