@@ -4,9 +4,6 @@ import {
   fill
 } from '../helpers'
 
-import RACES from "../pcs/racesData.json";
-import SEXES from "../pcs/sexesData.json";
-import CLASSES from "../pcs/classesData.json";
 import init from "../pcs/savedData";
 
 const NO_CHARACTERS_ERROR = 'There are no Ultima I characters saved on this disk.'
@@ -49,10 +46,6 @@ fill(init, Item, DATA);
 
 export default {
   ...crud(Item, 'character', DATA),
-
-  fetchRaces: () => new Promise(resolve => resolve({ races: prepare(RACES) })),
-  fetchSexes: () => new Promise(resolve => resolve({ sexes: prepare(SEXES) })),
-  fetchClasses: () => new Promise(resolve => resolve({ classes: prepare(CLASSES) })),
 
   fetchSaved: () => new Promise((resolve) => {
     if (Object.keys(DATA).length <= 0)

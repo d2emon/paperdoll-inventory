@@ -2,6 +2,8 @@ import pcService from '../../services/pc'
 import worldMapService from '@/services/worldMap'
 import castleService from '@/services/castles'
 
+const NO_CHARACTERS_ERROR = 'There are no Ultima I characters saved on this disk.'
+
 const state = {
   ready: false,
 
@@ -112,7 +114,11 @@ const actions = {
     }),
   fetchCharacters: ({ state, commit }) => pcService
     .fetchCharacters()
-    .then(({ characters }) => commit('setCharacters', characters))
+    .then(({ characters }) => {
+      commit('setCharacters', characters)
+      if (characters.length <= 0) throw new Error(NO_CHARACTERS_ERROR)
+      commit('setError', null)
+    })
     .catch(e => commit('setError', e.message)),
   loadCharacter: ({ state, commit }, characterId) => {
     console.log(characterId);
@@ -125,9 +131,9 @@ const actions = {
       .saveCharacter({
         name: state.name,
         ...state.stats,
-        race: state.race,
-        sex: state.sex,
-        characterClass: state.characterClass,
+        race_id: state.race.id,
+        sex_id: state.sex.id,
+        class_id: state.characterClass.id,
         hp: state.hp,
         food: state.food,
         xp: state.xp,
