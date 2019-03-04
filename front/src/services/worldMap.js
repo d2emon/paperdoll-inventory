@@ -1,4 +1,5 @@
-import castles from '../castles'
+import Api from './api'
+import castles from './castles'
 
 const WORLD_MAP = [
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -29,6 +30,7 @@ const Y_MAX = 255
 const X_MAX_CASTLE = 38
 const Y_MAX_CASTLE = 18
 
+/*
 const location = (x, y, locationType) => castles
   .getCastleAt(x, y)
   .then(({ castle }) => ({
@@ -37,37 +39,42 @@ const location = (x, y, locationType) => castles
     locationType,
     castle
   }))
+*/
 
 export default {
   X_OFFSET,
   Y_OFFSET,
   X_MAX,
   Y_MAX,
-  getLocalMap: (playerX, playerY) => new Promise((resolve) => {
-    const x0 = playerX - X_OFFSET
-    const x1 = playerX + X_OFFSET + 1
-    const y0 = playerY - Y_OFFSET
-    const y1 = playerY + Y_OFFSET + 1
-    const locations = []
-    const minY = Math.max(0, y0)
-    const maxY = Math.min(WORLD_MAP.length, y1)
-    WORLD_MAP.slice(minY, maxY).forEach((row, j) => {
-      const minX = Math.max(0, x0)
-      const maxX = Math.min(row.length, x1)
-      row.slice(minX, maxX).forEach((locationType, i) => {
-        locations.push(location(i + minX, j + minY, locationType))
-      })
-    })
+  getLocalMap: (x, y) => Api.get(`/map-${x}-${y}`)
+    .then(({ data }) => {
+      const {
+        location,
+        localMap
+      } = data
+      console.log(location, localMap)
+      /*
+      const x0 = playerX - X_OFFSET
+      const x1 = playerX + X_OFFSET + 1
+      const y0 = playerY - Y_OFFSET
+      const y1 = playerY + Y_OFFSET + 1
 
-    Promise.all([
-      Promise.all(locations),
-      castles.getCastlesIn(x0, x1, y0, y1)
-    ])
-      .then(([localMap, { castles }]) => resolve({
-        localMap: localMap,
-        castles
-      }))
-  }),
+      Promise.all([
+        Promise.all(locations),
+        castles.getCastlesIn(x0, x1, y0, y1)
+      ])
+        .then(([localMap, { castles }]) => resolve({
+          localMap: localMap,
+          castles
+        }))
+      */
+      return {
+        location,
+        localMap,
+        castles: [],
+        cities: [],
+      }
+    }),
   canGo: (x, y) => new Promise((resolve) => {
     if (x < 0) return resolve(false)
     if (x > X_MAX) return resolve(false)
@@ -82,5 +89,5 @@ export default {
 
     return resolve(true)
   }),
-  getLocation: (x, y) => location(x, y, WORLD_MAP[y][x]).then(location => ({ location }))
+  // getLocation: (x, y) => location(x, y, WORLD_MAP[y][x]).then(location => ({ location }))
 }

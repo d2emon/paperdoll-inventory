@@ -8,6 +8,7 @@ from .data.players import Player
 from .data.races import Race
 from .data.sexes import Sex
 from .data.classes import CharacterClass
+from .data.locations import Location
 
 
 @api_rest.route('/languages')
@@ -76,10 +77,10 @@ class Characters(Resource):
         }
 
 
-@api_rest.route('/character')
+@api_rest.route('/character/<int:id>')
 class Character(Resource):
-    def get(self):
-        player = Player.get_record(request.args.get('id'))
+    def get(self, id):
+        player = Player.get_record(id)
         if player:
             player = player.as_dict()
         return {'character': player}
@@ -110,3 +111,18 @@ class CharacterClasses(Resource):
     def get(self):
         records = map(lambda record: record.as_dict(), CharacterClass.get_records())
         return {'classes': list(records)}
+
+
+@api_rest.route('/map-<int:x>-<int:y>')
+class LocalMap(Resource):
+    def get(self, x, y):
+        location = Location.by_coords(x, y)
+        if location:
+            location = location.as_dict()
+        locations = map(lambda record: record.as_dict(), Location.nearby(x, y))
+        return {
+            'location': location,
+            'localMap': list(locations),
+            'castles': [],
+            'cities': [],
+        }

@@ -7,6 +7,6 @@ export default {
 
   fetchCharacters: () => Api.get('characters').then(({ data }) => data),
   addCharacter: () => Api.get('character/new').then(({ data }) => data),
-  getCharacter: id => Api.get('character', { params: { id } }).then(({ data }) => data),
+  getCharacter: id => Api.get(`character/${id}`).then(({ data }) => data),
   saveCharacter: character => Api.put('characters', { character }).then(({ data }) => data),
 }

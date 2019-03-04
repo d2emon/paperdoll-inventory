@@ -3,36 +3,48 @@ import worldMapService from '@/services/worldMap'
 const state = {
   localMap: [],
   castles: [],
+  cities: [],
   location: {},
 }
 
 const getters = {}
 
 const mutations = {
-  setLocal: (state, { x, y, localMap, castles }) => {
+  setLocation: (state, location) => { state.location = location },
+  setLocal: (state, { x, y, localMap }) => {
     state.localMap = localMap.map(item => ({
       ...item,
-      x: item.x + worldMapService.X_OFFSET - x,
-      y: item.y + worldMapService.Y_OFFSET - y
-    }))
-    state.castles = castles.map(item => ({
-      ...item,
-      x: item.x + worldMapService.X_OFFSET - x,
-      y: item.y + worldMapService.Y_OFFSET - y
+      x: item.x - x,
+      y: item.y - y
     }))
   },
-  setLocation: (state, location) => { state.location = location }
+  setCastles: (state, { x, y, castles }) => {
+    state.castles = castles.map(item => ({
+      ...item,
+      x: item.x - x,
+      y: item.y - y
+    }))
+  },
+  setCities: (state, { x, y, cities }) => {
+    state.cities = cities.map(item => ({
+      ...item,
+      x: item.x - x,
+      y: item.y - y
+    }))
+  }
 }
 
 const actions = {
   fetchView: ({ state, commit }, { x, y }) => {
     return worldMapService
       .getLocalMap(x, y)
-      .then(({ localMap, castles }) => {
-        commit('setLocal', { x, y, localMap, castles })
-        return worldMapService.getLocation(x, y)
+      .then(({ location, localMap, castles, cities }) => {
+        console.log(location, localMap, castles, cities)
+        commit('setLocation', location)
+        commit('setLocal', { x, y, localMap })
+        commit('setCastles', { x, y, castles })
+        commit('setCities', { x, y, cities })
       })
-      .then(({ location }) => commit('setLocation', location))
   }
 }
 

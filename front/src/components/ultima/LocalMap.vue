@@ -4,14 +4,22 @@
       v-for="(item, id) in localMap"
       :key="`location-${id}`"
       class="map-item"
-      :style="`left: ${item.x * 32}px; top: ${item.y * 32}px;`"
-      :src="images[item.locationType]"
+      :style="`left: ${(item.x + xOffset) * 32}px; top: ${(item.y + yOffset) * 32}px;`"
+      :src="images[item.location_type]"
+      :title="JSON.stringify(item)"
     />
     <v-img
       v-for="(item, id) in castles"
       :key="`castle-${id}`"
       class="map-item"
-      :style="`left: ${item.x * 32}px; top: ${item.y * 32}px;`"
+      :style="`left: ${(item.x + xOffset) * 32}px; top: ${(item.y + yOffset) * 32}px;`"
+      :src="castleImage"
+    />
+    <v-img
+      v-for="(item, id) in cities"
+      :key="`city-${id}`"
+      class="map-item"
+      :style="`left: ${(item.x + xOffset) * 32}px; top: ${(item.y + yOffset) * 32}px;`"
       :src="castleImage"
     />
     <v-img
@@ -35,12 +43,15 @@
         `${process.env.BASE_URL}ultima/trees.png`,
         `${process.env.BASE_URL}ultima/grass.png`, // Mountains
         `${process.env.BASE_URL}ultima/castle.png`
-      ]
+      ],
+      xOffset: 9,
+      yOffset: 4,
     }),
     computed: {
       ...mapState('view', [
         'localMap',
-        'castles'
+        'castles',
+        'cities',
       ])
     }
   }
