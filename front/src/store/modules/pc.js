@@ -44,13 +44,11 @@ const mutations = {
   setClasses: (state, classes) => { state.classes = classes },
 
   setCharacter: (state, character) => {
-    console.log(character)
     if (!character) {
       state.ready = false
       return
     }
 
-    console.log(character)
     state.ready = character.id > 0
 
     state.name = character.name
@@ -74,7 +72,6 @@ const mutations = {
     state.coin = character.coin
 
     state.position = character.position
-    console.log(state)
   },
   setStat: (state, { stat, value }) => { state.stats[stat] = value },
   setRace: (state, race) => { state.race = race },
@@ -121,7 +118,6 @@ const actions = {
     })
     .catch(e => commit('setError', e.message)),
   loadCharacter: ({ state, commit }, characterId) => {
-    console.log(characterId);
     return pcService
       .getCharacter(characterId)
       .then(({ character }) => commit('setCharacter', character))
