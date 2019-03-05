@@ -9,5 +9,8 @@ class Config:
     ROOT_DIR = os.path.dirname(APP_DIR)
     DIST_DIR = os.path.join(ROOT_DIR, 'dist')
 
+    SQLALCHEMY_DATABASE_URI = "sqlite://"
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
     # if not os.path.exists(DIST_DIR):
     #     raise Exception("DIST_DIR not found: {}".format(DIST_DIR))

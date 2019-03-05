@@ -1,34 +1,40 @@
 import os
-import random
 import requests
 
 from flask import Flask, current_app, send_file
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
 
 from .config import Config
-
-from .api import api
-from .api.player import player_api
-from .api.messages import messages_api
 
 app = Flask(
     __name__,
     static_folder="../paperdoll-inventory/public",
     template_folder="../paperdoll-inventory",
 )
-cors = CORS(
-    app,
-    resources={r"/api/*": {"origins": "*"}}
-)
-
-app.register_blueprint(api)
-app.register_blueprint(player_api)
-app.register_blueprint(messages_api)
 
 app.config.from_object('app.config.Config')
 
 if app.debug:
     app.logger.info('Config: {}'.format(app.config))
+
+cors = CORS(
+    app,
+    resources={r"/api/*": {"origins": "*"}}
+)
+db = SQLAlchemy(app)
+
+from .api import api
+from .api.player import player_api
+from .api.messages import messages_api
+
+app.register_blueprint(api)
+app.register_blueprint(player_api)
+app.register_blueprint(messages_api)
+
+if len(db.metadata.tables.keys()) <= 0:
+    from models import *
+db.create_all()
 
 
 @app.route('/', defaults={'path': ''})
