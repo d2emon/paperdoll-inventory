@@ -16,12 +16,12 @@ const actions = {
       const { direction } = params
       if (!direction) return dispatch('wrongCommand')
 
-      dispatch('pc/goDirection', direction, { root: true })
+      return dispatch('pc/goDirection', direction, { root: true })
         .then(result => {
           if (!result) return dispatch('wrongCommand')
 
-          dispatch('castle/movePeople', null, { root: true })
-          return commit('addText', direction)
+          commit('addText', direction)
+          return dispatch('castle/movePeople', null, { root: true })
         })
     }
 

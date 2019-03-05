@@ -215,7 +215,7 @@
             <span class="hotkey">X</span>-it
           </h5>
           <v-btn
-            disabled="!inCastle"
+            :disabled="!inCastle"
             @click="exitCastle"
           >
             <span class="hotkey">X</span>-it

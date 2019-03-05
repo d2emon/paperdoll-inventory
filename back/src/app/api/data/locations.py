@@ -9,8 +9,17 @@ Y_MAX = 255
 class Location(LocalRecord):
     RECORDS = []
 
-    def __init__(self, **fields):
-        super().__init__(**fields)
+    GRASS = 0
+    WATER = 1
+    TREES = 2
+    MOUNTAINS = 3
+
+    PASSABLE ={
+        GRASS: True,
+        WATER: False,
+        TREES: False,
+        MOUNTAINS: False,
+    }
 
     def as_dict(self):
         return {
@@ -19,6 +28,7 @@ class Location(LocalRecord):
             'y': self.y,
             'location_type': self.location_type_id,
             'castle_id': self.castle_id,
+            'passable': self.passable
         }
 
     @property
@@ -28,6 +38,10 @@ class Location(LocalRecord):
             return None
         else:
             return castle.id
+
+    @property
+    def passable(self):
+        return self.PASSABLE.get(self.location_type_id, True)
 
 
 WORLD_MAP = [

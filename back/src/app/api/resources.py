@@ -130,6 +130,17 @@ class LocalMap(Resource):
         }
 
 
+@api_rest.route('/location-<int:x>-<int:y>')
+class Locations(Resource):
+    def get(self, x, y):
+        location = Location.by_coords(x, y)
+        if location:
+            location = location.as_dict()
+        return {
+            'location': location,
+        }
+
+
 @api_rest.route('/castle/<int:castle_id>')
 class Castles(Resource):
     def get(self, castle_id):
