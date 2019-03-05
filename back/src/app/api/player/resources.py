@@ -1,6 +1,5 @@
 from flask_restplus import Resource
 from data.classes import CharacterClass
-from data.messages import Message
 from data.players import Player
 from data.races import Race
 from data.sexes import Sex

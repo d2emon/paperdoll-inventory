@@ -9,6 +9,7 @@ from .config import Config
 
 from .api import api
 from .api.player import player_api
+from .api.messages import messages_api
 
 app = Flask(
     __name__,
@@ -22,6 +23,7 @@ cors = CORS(
 
 app.register_blueprint(api)
 app.register_blueprint(player_api)
+app.register_blueprint(messages_api)
 
 app.config.from_object('app.config.Config')
 
