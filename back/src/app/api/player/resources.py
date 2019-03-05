@@ -1,3 +1,4 @@
+from flask import request
 from flask_restplus import Resource
 from data.classes import CharacterClass
 from data.players import Player
@@ -54,3 +55,16 @@ class Sexes(Resource):
 class CharacterClasses(Resource):
     def get(self):
         return {'classes': CharacterClass.serialize_all()}
+
+
+@api_rest.route('/<int:character_id>/go/')
+class MoveCharacter(Resource):
+    def post(self, character_id):
+        direction_id = request.form.get('direction')
+        character = Player.get_record(character_id)
+        if character is not None:
+            character.walk(direction_id)
+            character = character.serialize()
+        return {
+            'character': character,
+        }

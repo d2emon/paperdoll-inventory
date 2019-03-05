@@ -43,6 +43,13 @@ class Location(LocalRecord):
     def passable(self):
         return self.PASSABLE.get(self.location_type_id, True)
 
+    @classmethod
+    def can_go(cls, x, y):
+        item = cls.by_coords(x, y,)
+        if item is None:
+            return False
+        return item.passable
+
 
 WORLD_MAP = [
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

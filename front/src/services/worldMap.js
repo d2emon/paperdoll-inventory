@@ -43,10 +43,4 @@ export default {
         cities: [],
       }
     }),
-  canGo: (x, y) => Api.get(`/location-${x}-${y}`)
-    .then(({ data }) => {
-      const { location } = data
-      if (!location) return false
-      return location.passable
-    }),
 }

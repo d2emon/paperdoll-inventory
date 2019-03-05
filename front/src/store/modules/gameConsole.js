@@ -1,4 +1,5 @@
 import messageService from '@/services/messages'
+import pcService from '@/services/pc'
 
 const state = {
   text: []
@@ -19,15 +20,10 @@ const actions = {
   doCommand: ({ dispatch }, { playerId, command, ...params }) => {
     if (command === 'Go') {
       const { direction } = params
-      if (!direction) return dispatch('sendMessage', { playerId })
-
-      return dispatch('pc/goDirection', direction, { root: true })
-        .then(result => {
-          if (!result) return dispatch('sendMessage', { playerId })
-
-          dispatch('sendMessage', { playerId, message: direction })
-          return dispatch('castle/movePeople', null, { root: true })
-        })
+      return pcService.moveCharacter(playerId, direction)
+        .then(() => dispatch('pc/loadCharacter', playerId, { root: true }))
+        .then(() => dispatch('castle/movePeople', null, { root: true }))
+        .then(() => dispatch('receiveMessages', playerId))
     }
 
     if (command === 'Enter') {

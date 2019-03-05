@@ -1,11 +1,23 @@
 from .db import Record
 from .classes import CharacterClass
+from .locations import Location
 from .messages import Message
 from .races import Race
 from .sexes import Sex
 
 START_X = 18
 START_Y = 6
+
+DIRECTIONS = {
+    'North': (0, -1),
+    'East': (1, 0),
+    'South': (0, 1),
+    'West': (-1, 0),
+}
+
+
+def get_direction(direction_id):
+    return DIRECTIONS.get(direction_id, (0, 0))
 
 
 class Player(Record):
@@ -27,7 +39,7 @@ class Player(Record):
         self.class_id = fields.get('class_id')
 
         self.hp = fields.get('hp', 150)
-        self.food = fields.get('food', 200)
+        self.food = fields.get('food', 200.0)
         self.xp = fields.get('xp', 0)
         self.coin = fields.get('coin', 100)
 
@@ -54,6 +66,35 @@ class Player(Record):
         for record in self.messages:
             Message.delete_record(record.id)
 
+    def walk(self, direction_id):
+        x, y = get_direction(direction_id)
+        new_x = self.x + x
+        new_y = self.y + y
+
+        can_go = Location.can_go(new_x, new_y)
+        # const canGo = state.castleId
+        #   ? castleService.canGo(state.castleId, x, y)
+        #   : worldMapService.canGo(x, y)
+
+        if not can_go:
+            self.message()
+            return False
+
+        self.message(direction_id)
+        self.x = new_x
+        self.y = new_y
+
+        self.eat()
+        return True
+
+    def eat(self):
+        self.food -= 0.5
+
+    def message(self, text="Huh?"):
+        message = Message(player_id=self.id, text=text)
+        message.save()
+        return message
+
     def serialize(self):
         return {
             'id': self.id,
@@ -71,7 +112,7 @@ class Player(Record):
             'class': self.serialize_field(self.character_class),
 
             'hp': self.hp,
-            'food': self.food,
+            'food': int(self.food),
             'xp': self.xp,
             'coin': self.coin,
 

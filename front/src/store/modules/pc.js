@@ -1,6 +1,4 @@
 import pcService from '@/services/pc'
-import worldMapService from '@/services/worldMap'
-import castleService from '@/services/castles'
 
 const NO_CHARACTERS_ERROR = 'There are no Ultima I characters saved on this disk.'
 
@@ -44,6 +42,7 @@ const mutations = {
   setClasses: (state, classes) => { state.classes = classes },
 
   setCharacter: (state, character) => {
+    console.log(character)
     if (!character) {
       state.characterId = null
       return
@@ -88,9 +87,7 @@ const mutations = {
     Object.keys(state.stats).forEach(stat => {
       state.points -= state.stats[stat] - 10
     })
-  },
-
-  eatFood: (state) => { state.food -= 0.5 }
+  }
 }
 
 const actions = {
@@ -146,11 +143,12 @@ const actions = {
     commit('setStat', { stat, value })
     commit('recalcPoints')
   },
-  goDirection: ({ state, dispatch }, directionId) => {
-    if (directionId === 'North') return dispatch('goBy', { x: 0, y: -1 })
-    if (directionId === 'East') return dispatch('goBy', { x: 1, y: 0 })
-    if (directionId === 'South') return dispatch('goBy', { x: 0, y: 1 })
-    if (directionId === 'West') return dispatch('goBy', { x: -1, y: 0 })
+  /*
+  goDirection: ({ state, commit, dispatch }, directionId) => {
+    pcService.moveCharacter(state.characterId, directionId)
+      .then(({ character }) => {
+        commit('setCharacter', character)
+      })
   },
   goBy: ({ state, commit }, position) => {
     const x = (state.position.x || 0) + position.x
@@ -168,6 +166,7 @@ const actions = {
         return true
       })
   },
+  */
   enterCastle: ({ commit, dispatch }, castle) => {
     if (!castle) return
 

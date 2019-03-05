@@ -3,7 +3,7 @@ from data.messages import Message
 from . import api_rest
 
 
-@api_rest.route('/<int:player_id>')
+@api_rest.route('/<int:player_id>/')
 class Messages(Resource):
     def get(self, player_id):
         records = map(lambda record: record.serialize(), Message.by_player(player_id))

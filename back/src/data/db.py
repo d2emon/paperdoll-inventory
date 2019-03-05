@@ -1,4 +1,6 @@
 class Record:
+    RECORDS = []
+
     def __init__(self, **fields):
         self.id = fields.get('id')
 
