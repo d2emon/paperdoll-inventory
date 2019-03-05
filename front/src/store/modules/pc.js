@@ -1,13 +1,13 @@
-import pcService from '../../services/pc'
+import pcService from '@/services/pc'
 import worldMapService from '@/services/worldMap'
 import castleService from '@/services/castles'
 
 const NO_CHARACTERS_ERROR = 'There are no Ultima I characters saved on this disk.'
 
 const state = {
-  ready: false,
-
   characters: [],
+
+  characterId: null,
 
   races: [],
   sexes: [],
@@ -45,12 +45,13 @@ const mutations = {
 
   setCharacter: (state, character) => {
     if (!character) {
-      state.ready = false
+      state.characterId = null
       return
     }
 
     state.ready = character.id > 0
 
+    state.characterId = character.id
     state.name = character.name
 
     state.stats = {

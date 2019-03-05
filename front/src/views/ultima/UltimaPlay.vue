@@ -251,31 +251,43 @@
     }),
     computed: {
       ...mapState('pc', [
-        'ready',
+        'characterId',
         'position',
         'castleId'
       ]),
       ...mapState('view', ['location'])
     },
     mounted () {
-      if (!this.ready) return this.$router.push('/ultima')
+      if (!this.characterId) return this.$router.push('/ultima')
 
       this.fetchView(this.position)
-      this.doCommand({})
+      this.doCommand({ playerId: this.characterId })
     },
     methods: {
       ...mapActions('view', ['fetchView']),
       ...mapActions('gameConsole', ['doCommand']),
       goDirection (direction) {
-        this.doCommand({ command: 'Go', direction })
+        this.doCommand({
+          playerId: this.characterId,
+          command: 'Go',
+          direction
+        })
           .then(() => this.fetchView(this.position))
       },
       enterCastle () {
-        this.doCommand({ command: 'Enter', castle: this.location.castle })
+        this.doCommand({
+          playerId: this.characterId,
+          command: 'Enter',
+          castle: this.location.castle
+        })
           .then(() => { this.inCastle = true })
       },
       exitCastle () {
-        this.doCommand({ command: 'Exit', location: this.location.castle })
+        this.doCommand({
+          playerId: this.characterId,
+          command: 'Exit',
+          location: this.location.castle
+        })
           .then(() => { this.inCastle = false })
       }
     }

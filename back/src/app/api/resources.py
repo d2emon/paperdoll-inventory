@@ -4,6 +4,7 @@ from flask_restplus import Resource
 from datetime import datetime
 from . import api_rest
 from .security import SecureResource
+from .data.messages import Message
 from .data.players import Player
 from .data.races import Race
 from .data.sexes import Sex
@@ -56,10 +57,23 @@ class SecureResourceOne(SecureResource):
         return {'timestamp': timestamp}
 
 
-@api_rest.route('/random')
-class RandomNumber(Resource):
-    def get(self):
-        return {'randomNumber': random.randint(1, 100)}
+@api_rest.route('/messages/<int:player_id>')
+class Messages(Resource):
+    def get(self, player_id):
+        records = map(lambda record: record.as_dict(), Message.by_player(player_id))
+        return {'messages': list(records)}
+
+    def put(self, player_id):
+        text = api_rest.payload.get('message') or 'Huh?'
+        message = Message(
+            player_id=player_id,
+            text=text
+        )
+        message.save()
+        return {
+            'result': True,
+            'message': message.as_dict(),
+        }
 
 
 @api_rest.route('/characters')
@@ -78,12 +92,16 @@ class Characters(Resource):
         }
 
 
-@api_rest.route('/character/<int:id>')
+@api_rest.route('/character/<int:character_id>')
 class Character(Resource):
-    def get(self, id):
-        player = Player.get_record(id)
-        if player:
-            player = player.as_dict()
+    def get(self, character_id):
+        player = Player.get_record(character_id)
+        if not player:
+            return { 'character': None }
+
+        player = player.as_dict()
+        for record in Message.by_player(character_id):
+            Message.delete_record(record.id)
         return {'character': player}
 
 

@@ -1,3 +1,5 @@
+import messageService from '@/services/messages'
+
 const state = {
   text: []
 }
@@ -5,45 +7,48 @@ const state = {
 const getters = {}
 
 const mutations = {
-  addText: (state, text) => { state.text.push(text) }
+  setText: (state, text) => { state.text = text }
 }
 
 const actions = {
-  wrongCommand: ({ commit }) => commit('addText', 'Huh?'),
+  sendMessage: ({ dispatch }, { playerId, message }) => messageService.addMessage(playerId, message)
+    .then(() => dispatch('receiveMessages', playerId)),
+  receiveMessages: ({ commit }, playerId) => messageService.fetchMessages(playerId)
+    .then(({ messages }) => commit('setText', messages.map(message => message.text))),
 
-  doCommand: ({ commit, dispatch }, { command, ...params }) => {
+  doCommand: ({ dispatch }, { playerId, command, ...params }) => {
     if (command === 'Go') {
       const { direction } = params
-      if (!direction) return dispatch('wrongCommand')
+      if (!direction) return dispatch('sendMessage', { playerId })
 
       return dispatch('pc/goDirection', direction, { root: true })
         .then(result => {
-          if (!result) return dispatch('wrongCommand')
+          if (!result) return dispatch('sendMessage', { playerId })
 
-          commit('addText', direction)
+          dispatch('sendMessage', { playerId, message: direction })
           return dispatch('castle/movePeople', null, { root: true })
         })
     }
 
     if (command === 'Enter') {
       const { castle } = params
-      if (!castle) return dispatch('wrongCommand')
+      if (!castle) return dispatch('sendMessage', { playerId })
 
       dispatch('castle/fetchCastle', castle.castleId, { root: true })
       dispatch('pc/enterCastle', castle, { root: true })
-      return commit('addText', `Entering...<br />${castle.name}`)
+      return dispatch('sendMessage', { playerId, message: `Entering...<br />${castle.name}` })
     }
 
     if (command === 'Exit') {
       const { castle } = params
-      if (!castle) return dispatch('wrongCommand')
+      if (!castle) return dispatch('sendMessage', { playerId })
 
       dispatch('castle/fetchCastle', null, { root: true })
       dispatch('pc/exitCastle', castle, { root: true })
-      return commit('addText', `Exiting...`)
+      return dispatch('sendMessage', { playerId, message: `Exiting...` })
     }
 
-    return dispatch('wrongCommand')
+    return dispatch('sendMessage', { playerId })
   }
 }
 
