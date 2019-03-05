@@ -162,7 +162,7 @@
             <span class="hotkey">E</span>nter
           </h5>
           <v-btn
-            v-if="location.castle && !inCastle"
+            :disabled="!location || !location.castle_id || inCastle"
             @click="enterCastle"
           >
             <span class="hotkey">E</span>nter
@@ -215,7 +215,7 @@
             <span class="hotkey">X</span>-it
           </h5>
           <v-btn
-            v-if="inCastle"
+            disabled="!inCastle"
             @click="exitCastle"
           >
             <span class="hotkey">X</span>-it

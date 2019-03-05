@@ -4,7 +4,8 @@ const state = {
   localMap: [],
   castles: [],
   cities: [],
-  location: {},
+  location: null,
+  castle: null
 }
 
 const getters = {}
@@ -39,7 +40,6 @@ const actions = {
     return worldMapService
       .getLocalMap(x, y)
       .then(({ location, localMap, castles, cities }) => {
-        console.log(location, localMap, castles, cities)
         commit('setLocation', location)
         commit('setLocal', { x, y, localMap })
         commit('setCastles', { x, y, castles })

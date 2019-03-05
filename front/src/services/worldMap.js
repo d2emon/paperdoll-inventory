@@ -50,28 +50,13 @@ export default {
     .then(({ data }) => {
       const {
         location,
-        localMap
+        localMap,
+        castles,
       } = data
-      console.log(location, localMap)
-      /*
-      const x0 = playerX - X_OFFSET
-      const x1 = playerX + X_OFFSET + 1
-      const y0 = playerY - Y_OFFSET
-      const y1 = playerY + Y_OFFSET + 1
-
-      Promise.all([
-        Promise.all(locations),
-        castles.getCastlesIn(x0, x1, y0, y1)
-      ])
-        .then(([localMap, { castles }]) => resolve({
-          localMap: localMap,
-          castles
-        }))
-      */
       return {
         location,
         localMap,
-        castles: [],
+        castles,
         cities: [],
       }
     }),

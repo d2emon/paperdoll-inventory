@@ -9,6 +9,7 @@ from .data.races import Race
 from .data.sexes import Sex
 from .data.classes import CharacterClass
 from .data.locations import Location
+from .data.castles import Castle
 
 
 @api_rest.route('/languages')
@@ -120,9 +121,21 @@ class LocalMap(Resource):
         if location:
             location = location.as_dict()
         locations = map(lambda record: record.as_dict(), Location.nearby(x, y))
+        castles = map(lambda record: record.as_dict(), Castle.nearby(x, y))
         return {
             'location': location,
             'localMap': list(locations),
-            'castles': [],
+            'castles': list(castles),
             'cities': [],
         }
+
+
+@api_rest.route('/castle/<int:castle_id>')
+class Castles(Resource):
+    def get(self, castle_id):
+        castle = Castle.get_record(castle_id)
+        if castle:
+            castle_dict = castle.as_dict()
+            castle_dict['locations'] = castle.locations
+            castle = castle_dict
+        return {'castle': castle}
