@@ -21,7 +21,7 @@ class Location(LocalRecord):
         MOUNTAINS: False,
     }
 
-    def as_dict(self):
+    def serialize(self):
         return {
             'id': self.id,
             'x': self.x,

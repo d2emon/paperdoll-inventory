@@ -8,6 +8,7 @@ from flask_cors import CORS
 from .config import Config
 
 from .api import api
+from .api.player import player_api
 
 app = Flask(
     __name__,
@@ -20,11 +21,11 @@ cors = CORS(
 )
 
 app.register_blueprint(api)
+app.register_blueprint(player_api)
 
 app.config.from_object('app.config.Config')
 
 if app.debug:
-    app.logger.info('Mode: {}'.format(Config.FLASK_ENV))
     app.logger.info('Config: {}'.format(app.config))
 
 

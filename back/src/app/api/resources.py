@@ -1,16 +1,11 @@
-import random
 from flask import request
 from flask_restplus import Resource
 from datetime import datetime
+from data.castles import Castle
+from data.locations import Location
+from data.messages import Message
 from . import api_rest
 from .security import SecureResource
-from .data.messages import Message
-from .data.players import Player
-from .data.races import Race
-from .data.sexes import Sex
-from .data.classes import CharacterClass
-from .data.locations import Location
-from .data.castles import Castle
 
 
 @api_rest.route('/languages')
@@ -60,7 +55,7 @@ class SecureResourceOne(SecureResource):
 @api_rest.route('/messages/<int:player_id>')
 class Messages(Resource):
     def get(self, player_id):
-        records = map(lambda record: record.as_dict(), Message.by_player(player_id))
+        records = map(lambda record: record.serialize(), Message.by_player(player_id))
         return {'messages': list(records)}
 
     def put(self, player_id):
@@ -72,64 +67,8 @@ class Messages(Resource):
         message.save()
         return {
             'result': True,
-            'message': message.as_dict(),
+            'message': message.serialize(),
         }
-
-
-@api_rest.route('/characters')
-class Characters(Resource):
-    def get(self):
-        records = map(lambda record: record.as_dict(), Player.get_records())
-        return {'characters': list(records)}
-
-    def put(self):
-        data = api_rest.payload.get('character', dict())
-        player = Player(**data)
-        player.save()
-        return {
-            'result': True,
-            'character': player.as_dict(),
-        }
-
-
-@api_rest.route('/character/<int:character_id>')
-class Character(Resource):
-    def get(self, character_id):
-        player = Player.get_record(character_id)
-        if not player:
-            return { 'character': None }
-
-        player = player.as_dict()
-        for record in Message.by_player(character_id):
-            Message.delete_record(record.id)
-        return {'character': player}
-
-
-@api_rest.route('/character/new')
-class AddCharacter(Resource):
-    def get(self):
-        return {'character': Player().as_dict()}
-
-
-@api_rest.route('/races')
-class Races(Resource):
-    def get(self):
-        records = map(lambda record: record.as_dict(), Race.get_records())
-        return {'races': list(records)}
-
-
-@api_rest.route('/sexes')
-class Sexes(Resource):
-    def get(self):
-        records = map(lambda record: record.as_dict(), Sex.get_records())
-        return {'sexes': list(records)}
-
-
-@api_rest.route('/classes')
-class CharacterClasses(Resource):
-    def get(self):
-        records = map(lambda record: record.as_dict(), CharacterClass.get_records())
-        return {'classes': list(records)}
 
 
 @api_rest.route('/map-<int:x>-<int:y>')
@@ -137,9 +76,9 @@ class LocalMap(Resource):
     def get(self, x, y):
         location = Location.by_coords(x, y)
         if location:
-            location = location.as_dict()
-        locations = map(lambda record: record.as_dict(), Location.nearby(x, y))
-        castles = map(lambda record: record.as_dict(), Castle.nearby(x, y))
+            location = location.serialize()
+        locations = map(lambda record: record.serialize(), Location.nearby(x, y))
+        castles = map(lambda record: record.serialize(), Castle.nearby(x, y))
         return {
             'location': location,
             'localMap': list(locations),
@@ -153,7 +92,7 @@ class Locations(Resource):
     def get(self, x, y):
         location = Location.by_coords(x, y)
         if location:
-            location = location.as_dict()
+            location = location.serialize()
         return {
             'location': location,
         }
@@ -164,7 +103,7 @@ class Castles(Resource):
     def get(self, castle_id):
         castle = Castle.get_record(castle_id)
         if castle:
-            castle_dict = castle.as_dict()
+            castle_dict = castle.serialize()
             castle_dict['locations'] = castle.locations
             castle = castle_dict
         return {'castle': castle}

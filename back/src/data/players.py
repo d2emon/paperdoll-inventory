@@ -1,7 +1,8 @@
 from .db import Record
-from.races import Race
-from.sexes import Sex
-from.classes import CharacterClass
+from .classes import CharacterClass
+from .messages import Message
+from .races import Race
+from .sexes import Sex
 
 START_X = 18
 START_Y = 6
@@ -42,25 +43,18 @@ class Player(Record):
         return Sex.get_record(self.sex_id)
 
     @property
-    def characterClass(self):
+    def character_class(self):
         return CharacterClass.get_record(self.class_id)
 
-    def as_dict(self):
-        if self.race:
-            race = self.race.as_dict()
-        else:
-            race = None
+    @property
+    def messages(self):
+        return Message.by_player(self.id)
 
-        if self.sex:
-            sex = self.sex.as_dict()
-        else:
-            sex = None
+    def clear_messages(self):
+        for record in self.messages:
+            Message.delete_record(record.id)
 
-        if self.characterClass:
-            characterClass = self.characterClass.as_dict()
-        else:
-            characterClass = None
-
+    def serialize(self):
         return {
             'id': self.id,
             'name': self.name,
@@ -72,9 +66,9 @@ class Player(Record):
             'wisdom': self.wisdom,
             'intelligence': self.intelligence,
 
-            'race': race,
-            'sex': sex,
-            'class': characterClass,
+            'race': self.serialize_field(self.race),
+            'sex': self.serialize_field(self.sex),
+            'class': self.serialize_field(self.character_class),
 
             'hp': self.hp,
             'food': self.food,

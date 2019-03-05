@@ -8,7 +8,7 @@ class CastleLocation(LocalRecord):
         super().__init__(**fields)
         self.castle_id = fields.get('castle_id')
 
-    def as_dict(self):
+    def serialize(self):
         return {
             'id': self.id,
             'castle_id': self.castle_id,

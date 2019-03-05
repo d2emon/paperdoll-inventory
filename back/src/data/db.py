@@ -28,10 +28,20 @@ class Record:
             record_id = cls.RECORDS.index(record)
             del cls.RECORDS[record_id]
 
-    def as_dict(self):
+    def serialize(self):
         return {
             'id': self.id,
         }
+
+    @classmethod
+    def serialize_field(cls, field):
+        if field is None:
+            return None
+        return field.serialize()
+
+    @classmethod
+    def serialize_all(cls):
+        return list(map(lambda record: record.serialize(), cls.get_records()))
 
 
 class LocalRecord(Record):
@@ -44,7 +54,7 @@ class LocalRecord(Record):
         self.y = fields.get('y')
         self.location_type_id = fields.get('location_type_id')
 
-    def as_dict(self):
+    def serialize(self):
         return {
             'id': self.id,
             'x': self.x,
@@ -81,3 +91,17 @@ class LocalRecord(Record):
             y - cls.Y_OFFSET,
             y + cls.Y_OFFSET + 1,
         )
+
+
+class NamedRecord(Record):
+    RECORDS = []
+
+    def __init__(self, **fields):
+        super().__init__(**fields)
+        self.name = fields.get('name')
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+        }

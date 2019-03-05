@@ -9,7 +9,7 @@ class Message(Record):
         self.player_id = fields.get('player_id')
         self.text = fields.get('text', 'Huh?')
 
-    def as_dict(self):
+    def serialize(self):
         return {
             'id': self.id,
             'player_id': self.player_id,

@@ -9,7 +9,7 @@ class Castle(LocalRecord):
         super().__init__(**fields)
         self.name = fields.get('name')
 
-    def as_dict(self):
+    def serialize(self):
         return {
             'id': self.id,
             'x': self.x,
