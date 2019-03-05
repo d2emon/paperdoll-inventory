@@ -42,8 +42,12 @@ class Record:
         return field.serialize()
 
     @classmethod
+    def serialize_records(cls, records):
+        return list(map(lambda record: record.serialize(), records))
+
+    @classmethod
     def serialize_all(cls):
-        return list(map(lambda record: record.serialize(), cls.get_records()))
+        return cls.serialize_records(cls.get_records())
 
 
 class LocalRecord(Record):

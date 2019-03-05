@@ -12,16 +12,15 @@ const mutations = {
 }
 
 const actions = {
-  sendMessage: ({ dispatch }, { playerId, message }) => messageService.addMessage(playerId, message)
-    .then(() => dispatch('receiveMessages', playerId)),
+  sendMessage: ({ commit }, { playerId, message }) => messageService.addMessage(playerId, message)
+    .then(({ messages }) => commit('setText', messages.map(message => message.text))),
   receiveMessages: ({ commit }, playerId) => messageService.fetchMessages(playerId)
     .then(({ messages }) => commit('setText', messages.map(message => message.text))),
 
   doCommand: ({ dispatch }, { playerId, command, ...params }) => {
     if (command === 'Go') {
       const { direction } = params
-      return pcService.moveCharacter(playerId, direction)
-        .then(() => dispatch('pc/loadCharacter', playerId, { root: true }))
+      return dispatch('pc/moveCharacter', direction, { root: true })
         .then(() => dispatch('castle/movePeople', null, { root: true }))
         .then(() => dispatch('receiveMessages', playerId))
     }

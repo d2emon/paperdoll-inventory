@@ -6,8 +6,7 @@ from . import api_rest
 @api_rest.route('/<int:player_id>/')
 class Messages(Resource):
     def get(self, player_id):
-        records = map(lambda record: record.serialize(), Message.by_player(player_id))
-        return {'messages': list(records)}
+        return {'messages': Message.serialize_records(Message.by_player(player_id))}
 
     def put(self, player_id):
         text = api_rest.payload.get('message') or 'Huh?'
@@ -19,4 +18,5 @@ class Messages(Resource):
         return {
             'result': True,
             'message': message.serialize(),
+            'messages': Message.serialize_records(Message.by_player(player_id))
         }

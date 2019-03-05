@@ -42,7 +42,6 @@ const mutations = {
   setClasses: (state, classes) => { state.classes = classes },
 
   setCharacter: (state, character) => {
-    console.log(character)
     if (!character) {
       state.characterId = null
       return
@@ -142,6 +141,11 @@ const actions = {
     }
     commit('setStat', { stat, value })
     commit('recalcPoints')
+  },
+
+  moveCharacter: ({ state, dispatch }, direction) => {
+    return pcService.moveCharacter(state.characterId, direction)
+      .then(() => dispatch('loadCharacter', state.characterId))
   },
   /*
   goDirection: ({ state, commit, dispatch }, directionId) => {
