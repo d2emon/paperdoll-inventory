@@ -70,7 +70,10 @@ const mutations = {
     state.xp = character.xp
     state.coin = character.coin
 
-    state.position = character.position
+    state.position = {
+      x: character.x,
+      y: character.y
+    }
   },
   setStat: (state, { stat, value }) => { state.stats[stat] = value },
   setRace: (state, race) => { state.race = race },
@@ -131,7 +134,8 @@ const actions = {
         food: state.food,
         xp: state.xp,
         coin: state.coin,
-        position: state.position
+        x: state.position.x,
+        y: state.position.y,
       })
   },
   usePoints: ({ state, commit }, { stat, value }) => {

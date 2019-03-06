@@ -1,11 +1,10 @@
 import os
 import requests
-
 from flask import Flask, current_app, send_file
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-
 from .config import Config
+from db import init_db
 
 app = Flask(
     __name__,
@@ -24,6 +23,8 @@ cors = CORS(
 )
 db = SQLAlchemy(app)
 
+init_db(db)
+
 from .api import api
 from .api.player import player_api
 from .api.messages import messages_api
@@ -31,10 +32,6 @@ from .api.messages import messages_api
 app.register_blueprint(api)
 app.register_blueprint(player_api)
 app.register_blueprint(messages_api)
-
-if len(db.metadata.tables.keys()) <= 0:
-    from models import *
-db.create_all()
 
 
 @app.route('/', defaults={'path': ''})

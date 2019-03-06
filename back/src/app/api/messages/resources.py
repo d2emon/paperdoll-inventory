@@ -1,37 +1,22 @@
-from flask_restplus import Resource
-from data.messages import Message
+from flask_restplus import Resource, marshal, marshal_with
 from . import api_rest
+from .models import MessageModel
+from db.models.pcs import Pc
 
-from app import db
-from models import Messages
 
-
-@api_rest.route('/<int:player_id>/')
+@api_rest.route('/<int:character_id>/')
 class MessagesController(Resource):
-    def get(self, player_id):
-        tm = Messages('message')
-        db.session.add(tm)
-        db.session.commit()
+    @marshal_with(MessageModel, envelope='messages')
+    def get(self, character_id):
+        return Pc.query.get(character_id).read_messages()
 
-        for i in Messages.query.all():
-            print(i.serialize())
-
-        return {'messages': Message.serialize_records(Message.by_player(player_id))}
-
-    def put(self, player_id):
+    def put(self, character_id):
         text = api_rest.payload.get('message') or 'Huh?'
 
-        m = Messages(player_id, text)
-        db.session.add(m)
-        db.session.commit()
-
-        message = Message(
-            player_id=player_id,
-            text=text
-        )
-        message.save()
+        pc = Pc.query.get(character_id)
+        message = pc.message(text)
         return {
             'result': True,
-            'message': message.serialize(),
-            'messages': Message.serialize_records(Message.by_player(player_id))
+            'message': marshal(message, MessageModel),
+            'messages': marshal(pc.read_messages(), MessageModel),
         }
