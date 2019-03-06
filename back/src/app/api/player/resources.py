@@ -2,6 +2,7 @@ from flask import request
 from flask_restplus import Resource, marshal_with, marshal
 from app import db
 from db.models.pcs import Race, Sex, CharacterClass, Pc
+from db.models.castles import Castle
 from . import ns, api
 from .models import LookupModel, CharacterModel
 
@@ -25,7 +26,7 @@ class Sexes(Resource):
 @ns.route('/classes/')
 class CharacterClasses(Resource):
     @ns.doc('list_classes')
-    @marshal_with(LookupModel, envelope='classes')
+    @marshal_with(LookupModel, envelope='classes', skip_none=True)
     def get(self):
         return CharacterClass.query.all()
 
@@ -33,7 +34,7 @@ class CharacterClasses(Resource):
 @ns.route('/')
 class Characters(Resource):
     @ns.doc('list_characters')
-    @marshal_with(CharacterModel, envelope='characters')
+    @marshal_with(CharacterModel, envelope='characters', skip_none=True)
     def get(self):
         return Pc.query.all()
 
@@ -55,7 +56,7 @@ class Characters(Resource):
 @ns.param('character_id', "Character identifier")
 class Character(Resource):
     @ns.doc('list_characters')
-    @marshal_with(CharacterModel, envelope='character')
+    @marshal_with(CharacterModel, envelope='character', skip_none=True)
     def get(self, character_id):
         character = Pc.get_or_404(character_id)
         character.clear_messages()
@@ -65,19 +66,46 @@ class Character(Resource):
 @ns.route('/add/')
 class AddCharacter(Resource):
     @ns.doc('create_character')
-    @marshal_with(CharacterModel, envelope='character')
+    @marshal_with(CharacterModel, envelope='character', skip_none=True)
     def get(self):
         return Pc()
 
 
-@ns.route('/<int:character_id>/go/')
+@ns.route('/<int:character_id>/do/<action>/')
 @ns.response(404, "Character not found")
 @ns.param('character_id', "Character identifier")
+@ns.param('action', "Action to do")
 class MoveCharacter(Resource):
-    @ns.doc('move_character')
-    @marshal_with(CharacterModel, envelope='character')
-    def post(self, character_id):
-        direction_id = request.form.get('direction')
+    @ns.doc('do_action')
+    @marshal_with(CharacterModel, envelope='character', skip_none=True)
+    def post(self, character_id, action):
         character = Pc.get_or_404(character_id)
-        character.walk(direction_id)
+        if action == 'go':
+            direction_id = request.form.get('direction')
+            character.walk(direction_id)
+        elif action == 'enter':
+            castle_id = request.form.get('castle')
+            castle = Castle.get_or_404(castle_id)
+
+            character.message("Entering... <br />{}".format(castle.name))
+
+            character.x = 0
+            character.y = 0
+            character.castle = castle
+            db.session.add(character)
+            db.session.commit()
+        elif action == 'exit':
+            character.message("Exiting...")
+
+            # castle_id = request.form.get('castle')
+            # castle = Castle.get_or_404(castle_id)
+
+            castle = character.castle
+            if castle:
+                character.x = castle.x
+                character.y = castle.y
+                character.castle = None
+
+            db.session.add(character)
+            db.session.commit()
         return character

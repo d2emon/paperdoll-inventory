@@ -42,6 +42,7 @@ const mutations = {
   setClasses: (state, classes) => { state.classes = classes },
 
   setCharacter: (state, character) => {
+    console.log(character)
     if (!character) {
       state.characterId = null
       return
@@ -74,6 +75,10 @@ const mutations = {
       x: character.x,
       y: character.y
     }
+
+    state.castleId = character.castle
+      ? character.castle.id
+      : null
   },
   setStat: (state, { stat, value }) => { state.stats[stat] = value },
   setRace: (state, race) => { state.race = race },
@@ -147,45 +152,32 @@ const actions = {
     commit('recalcPoints')
   },
 
-  moveCharacter: ({ state, dispatch }, direction) => {
-    return pcService.moveCharacter(state.characterId, direction)
+  doAction: ({ state, dispatch }, { action, params }) => {
+    return pcService.doAction(state.characterId, action, params)
       .then(() => dispatch('loadCharacter', state.characterId))
   },
-  /*
-  goDirection: ({ state, commit, dispatch }, directionId) => {
-    pcService.moveCharacter(state.characterId, directionId)
-      .then(({ character }) => {
-        commit('setCharacter', character)
-      })
+
+  moveCharacter: ({ state, dispatch }, params) => {
+    return dispatch('doAction', { action: 'go', params })
   },
-  goBy: ({ state, commit }, position) => {
-    const x = (state.position.x || 0) + position.x
-    const y = (state.position.y || 0) + position.y
+  enterCastle: ({ commit, dispatch }, params) => {
+    // commit('setCastle', castle.castleId)
+    // commit('setPosition', castle.entrance)
 
-    const canGo = state.castleId
-      ? castleService.canGo(state.castleId, x, y)
-      : worldMapService.canGo(x, y)
-
-    return canGo.then(result => {
-        if (!result) return false
-
-        commit('setPosition', { x, y })
-        commit('eatFood')
-        return true
-      })
+    return dispatch('doAction', { action: 'enter', params })
   },
-  */
-  enterCastle: ({ commit, dispatch }, castle) => {
-    if (!castle) return
+  exitCastle: ({ commit }, params) => {
+      // const { castle } = params
+      // if (!castle) return dispatch('sendMessage', { playerId })
 
-    commit('setCastle', castle.castleId)
-    commit('setPosition', castle.entrance)
-  },
-  exitCastle: ({ commit }, castle) => {
-    commit('setCastle', null)
+      // dispatch('castle/fetchCastle', null, { root: true })
 
-    if (!castle) return
-    commit('setPosition', { x: castle.x, y: castle.y })
+    // commit('setCastle', null)
+
+    // if (!castle) return
+    // commit('setPosition', { x: castle.x, y: castle.y })
+
+    return dispatch('doAction', { action: 'exit', params })
   }
 }
 

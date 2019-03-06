@@ -2,6 +2,7 @@ from flask import abort
 from app import db
 from .messages import Message
 from .locations import Location
+from .castles import Castle
 
 
 START_X = 18
@@ -72,6 +73,9 @@ class Pc(db.Model):
     class_id = db.Column(db.Integer, db.ForeignKey('character_class.id'))
     character_class = db.relationship('CharacterClass')
 
+    castle_id = db.Column(db.Integer, db.ForeignKey('castle.id'))
+    castle = db.relationship('Castle')
+
     def __init__(self, **fields):
         self.name = fields.get('name', '')
 
@@ -94,32 +98,12 @@ class Pc(db.Model):
         self.x = fields.get('x', START_X)
         self.y = fields.get('y', START_Y)
 
-    def serialize(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-
-            'strength': self.strength,
-            'agility': self.agility,
-            'stamina': self.stamina,
-            'charisma': self.charisma,
-            'wisdom': self.wisdom,
-            'intelligence': self.intelligence,
-
-            'race': self.race,
-            'sex': self.sex,
-            'class': self.character_class,
-
-            'hp': self.hp,
-            'food': int(self.food),
-            'xp': self.xp,
-            'coin': self.coin,
-
-            'position': {
-                'x': self.x,
-                'y': self.y,
-            },
-        }
+    @classmethod
+    def get_or_404(cls, character_id):
+        pc = cls.query.get(character_id)
+        if pc is None:
+            abort(404, "Character #{} doesn't exists".format(character_id))
+        return pc
 
     def read_messages(self):
         return self.messages.limit(4).all()
@@ -160,12 +144,5 @@ class Pc(db.Model):
 
     def eat(self):
         self.food -= 0.5
-
-    @classmethod
-    def get_or_404(cls, character_id):
-        pc = cls.query.get(character_id)
-        if pc is None:
-            abort(404, "Character #{} doesn't exists".format(character_id))
-        return pc
 
 

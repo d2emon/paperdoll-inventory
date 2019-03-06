@@ -19,28 +19,16 @@ const actions = {
 
   doCommand: ({ dispatch }, { playerId, command, ...params }) => {
     if (command === 'Go') {
-      const { direction } = params
-      return dispatch('pc/moveCharacter', direction, { root: true })
-        .then(() => dispatch('castle/movePeople', null, { root: true }))
-        .then(() => dispatch('receiveMessages', playerId))
+      return dispatch('pc/doAction', { action: 'go', params }, { root: true })
+        // .then(() => dispatch('castle/movePeople', null, { root: true }))
     }
 
     if (command === 'Enter') {
-      const { castle } = params
-      if (!castle) return dispatch('sendMessage', { playerId })
-
-      dispatch('castle/fetchCastle', castle.castleId, { root: true })
-      dispatch('pc/enterCastle', castle, { root: true })
-      return dispatch('sendMessage', { playerId, message: `Entering...<br />${castle.name}` })
+      return dispatch('pc/doAction', { action: 'enter', params }, { root: true })
     }
 
     if (command === 'Exit') {
-      const { castle } = params
-      if (!castle) return dispatch('sendMessage', { playerId })
-
-      dispatch('castle/fetchCastle', null, { root: true })
-      dispatch('pc/exitCastle', castle, { root: true })
-      return dispatch('sendMessage', { playerId, message: `Exiting...` })
+      return dispatch('pc/doAction', { action: 'exit', params }, { root: true })
     }
 
     return dispatch('sendMessage', { playerId })

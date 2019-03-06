@@ -1,3 +1,4 @@
+from flask import abort
 from app import db
 from .local_mixin import LocalMixin
 
@@ -14,6 +15,13 @@ class Castle(LocalMixin, db.Model):
         self.y = fields.get('y')
         self.name = fields.get('name')
         # self.location_type_id = fields.get('location_type_id')
+
+    @classmethod
+    def get_or_404(cls, castle_id):
+        castle = cls.query.get(castle_id)
+        if castle is None:
+            abort(404, "Character #{} doesn't exists".format(castle_id))
+        return castle
 
     @property
     def passable(self):

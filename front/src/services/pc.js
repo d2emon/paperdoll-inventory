@@ -1,8 +1,9 @@
 import Api from './api'
 
-const makeForm = direction => {
+const makeForm = params => {
   const data = new FormData()
-  data.append('direction', direction)
+  if (params)
+    Object.keys(params).forEach(param => data.append(param, params[param]))
   return data
 }
 
@@ -18,6 +19,6 @@ export default {
   addCharacter: () => Api.get('/characters/add/').then(({ data }) => data),
   getCharacter: id => Api.get(`/characters/${id}/`).then(({ data }) => data),
 
-  moveCharacter: (id, direction) => Api.post(`/characters/${id}/go/`, makeForm(direction))
+  doAction: (id, action, params) => Api.post(`/characters/${id}/do/${action}/`, makeForm(params))
     .then(({ data }) => data)
 }

@@ -166,7 +166,7 @@
             @click="enterCastle"
           >
             <span class="hotkey">E</span>nter
-          </v-btn>
+          </v-btn> {{ castleId }}
           <p>
             Enter a town, castle, dungeon, or other landmark. You must be standing on the entrance before entering.
           </p>
@@ -264,34 +264,49 @@
       if (!this.characterId) return this.$router.push('/ultima')
 
       this.fetchView(this.position)
-      this.doCommand({ playerId: this.characterId })
     },
     methods: {
       ...mapActions('view', ['fetchView']),
-      ...mapActions('gameConsole', ['doCommand']),
+      ...mapActions('gameConsole', [
+        'doCommand',
+        'receiveMessages',
+      ]),
+      ...mapActions('pc', ['doAction']),
       goDirection (direction) {
         this.doCommand({
           playerId: this.characterId,
           command: 'Go',
           direction
         })
-          .then(() => this.fetchView(this.position))
+          .then(() => Promise.all([
+            this.receiveMessages(this.characterId),
+            this.fetchView(this.position)
+          ]))
       },
       enterCastle () {
         this.doCommand({
           playerId: this.characterId,
           command: 'Enter',
-          castle: this.location.castle
+          castle: this.castle.id
         })
           .then(() => { this.inCastle = true })
+          .then(() => Promise.all([
+            this.receiveMessages(this.characterId),
+            this.fetchView(this.position)
+          ]))
       },
       exitCastle () {
         this.doCommand({
           playerId: this.characterId,
           command: 'Exit',
-          location: this.location.castle
+          castle: this.castle.id,
+          location: this.castle
         })
           .then(() => { this.inCastle = false })
+          .then(() => Promise.all([
+            this.receiveMessages(this.characterId),
+            this.fetchView(this.position)
+          ]))
       }
     }
   }

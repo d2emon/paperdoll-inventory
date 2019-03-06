@@ -48,14 +48,6 @@ const actions = {
         location,
         castle,
       }) => {
-        console.log({
-          localMap,
-          castles,
-          cities,
-
-          location,
-          castle,
-        })
         commit('setLocal', { x, y, localMap })
         commit('setCastles', { x, y, castles })
         commit('setCities', { x, y, cities })
