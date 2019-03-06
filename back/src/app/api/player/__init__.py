@@ -1,8 +1,5 @@
-from flask import Blueprint
-from flask_restplus import Api, Namespace
+from .. import api
 
-player_api = Blueprint('player_api_blueprint', __name__, url_prefix='/api/character')
-api_rest = Api(player_api)
-ns = Namespace('characters', description='Characters')
+ns = api.namespace('characters', description='Characters')
 
 from .resources import *

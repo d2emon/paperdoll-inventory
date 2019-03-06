@@ -1,6 +1,6 @@
 from flask_restplus import fields
-from . import ns
+from . import api
 
-MessageModel = ns.model('Message', {
+MessageModel = api.model('Message', {
     'text': fields.String,
 })

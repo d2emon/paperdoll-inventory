@@ -7,17 +7,17 @@ const makeForm = direction => {
 }
 
 export default {
-  fetchRaces: () => Api.get('/character/races/').then(({ data }) => data),
-  fetchSexes: () => Api.get('/character/sexes/').then(({ data }) => data),
-  fetchClasses: () => Api.get('/character/classes/').then(({ data }) => data),
+  fetchRaces: () => Api.get('/characters/races/').then(({ data }) => data),
+  fetchSexes: () => Api.get('/characters/sexes/').then(({ data }) => data),
+  fetchClasses: () => Api.get('/characters/classes/').then(({ data }) => data),
 
-  fetchCharacters: () => Api.get('/character/').then(({ data }) => data),
-  saveCharacter: character => Api.put('/character/', { character })
+  fetchCharacters: () => Api.get('/characters/').then(({ data }) => data),
+  saveCharacter: character => Api.put('/characters/', { character })
     .then(({ data }) => data),
 
-  addCharacter: () => Api.get('/character/add/').then(({ data }) => data),
-  getCharacter: id => Api.get(`/character/${id}/`).then(({ data }) => data),
+  addCharacter: () => Api.get('/characters/add/').then(({ data }) => data),
+  getCharacter: id => Api.get(`/characters/${id}/`).then(({ data }) => data),
 
-  moveCharacter: (id, direction) => Api.post(`/character/${id}/go/`, makeForm(direction))
+  moveCharacter: (id, direction) => Api.post(`/characters/${id}/go/`, makeForm(direction))
     .then(({ data }) => data)
 }

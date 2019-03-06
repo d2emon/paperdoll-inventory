@@ -1,14 +1,14 @@
 from flask_restplus import fields
-from . import ns
+from . import api
 
 
-LookupModel = ns.model('Lookup', {
+LookupModel = api.model('Lookup', {
     'id': fields.Integer,
     'name': fields.String,
 })
 
-CharacterModel = ns.model('Character', {
-    'id': fields.Integer,
+CharacterModel = api.model('Character', {
+    'id': fields.Integer(readOnly=True),
     'name': fields.String,
 
     'strength': fields.Integer,

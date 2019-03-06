@@ -3,11 +3,11 @@ from flask_restplus import Resource
 from datetime import datetime
 from data.castles import Castle
 from data.locations import Location
-from . import api_rest
+from . import api
 from .security import SecureResource
 
 
-@api_rest.route('/languages')
+@api.route('/languages')
 class Languages(Resource):
     def get(self):
         return {
@@ -33,7 +33,7 @@ class Languages(Resource):
         }
 
 
-@api_rest.route('/resource/<string:resource_id>')
+@api.route('/resource/<string:resource_id>')
 class ResourceOne(Resource):
     def get(self, resource_id):
         timestamp = datetime.utcnow().isoformat()
@@ -44,14 +44,14 @@ class ResourceOne(Resource):
         return {'timestamp': payload}, 201
 
 
-@api_rest.route('/secure-resource/<string:resource_id>')
+@api.route('/secure-resource/<string:resource_id>')
 class SecureResourceOne(SecureResource):
     def get(self, resource_id):
         timestamp = datetime.utcnow().isoformat()
         return {'timestamp': timestamp}
 
 
-@api_rest.route('/map-<int:x>-<int:y>')
+@api.route('/map-<int:x>-<int:y>')
 class LocalMap(Resource):
     def get(self, x, y):
         location = Location.by_coords(x, y)
@@ -67,7 +67,7 @@ class LocalMap(Resource):
         }
 
 
-@api_rest.route('/location-<int:x>-<int:y>')
+@api.route('/location-<int:x>-<int:y>')
 class Locations(Resource):
     def get(self, x, y):
         location = Location.by_coords(x, y)
@@ -78,7 +78,7 @@ class Locations(Resource):
         }
 
 
-@api_rest.route('/castle/<int:castle_id>')
+@api.route('/castle/<int:castle_id>')
 class Castles(Resource):
     def get(self, castle_id):
         castle = Castle.get_record(castle_id)

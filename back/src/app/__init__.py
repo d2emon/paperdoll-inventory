@@ -25,13 +25,9 @@ db = SQLAlchemy(app)
 
 init_db(db)
 
-from .api import api
-from .api.player import player_api
-from .api.messages import messages_api
+from .api import api_blueprint
 
-app.register_blueprint(api)
-app.register_blueprint(player_api)
-app.register_blueprint(messages_api)
+app.register_blueprint(api_blueprint)
 
 
 @app.route('/', defaults={'path': ''})

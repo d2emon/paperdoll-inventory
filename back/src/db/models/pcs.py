@@ -1,3 +1,4 @@
+from flask import abort
 from app import db
 from .messages import Message
 
@@ -172,3 +173,12 @@ class Pc(db.Model):
 
     def eat(self):
         self.food -= 0.5
+
+    @classmethod
+    def get_or_404(cls, character_id):
+        pc = cls.query.get(character_id)
+        if pc is None:
+            abort(404, "Character #{} doesn't exists".format(character_id))
+        return pc
+
+

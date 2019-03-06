@@ -1,19 +1,25 @@
 from flask_restplus import Resource, marshal, marshal_with
-from . import api_rest
+from . import ns, api
 from .models import MessageModel
 from db.models.pcs import Pc
 
 
-@api_rest.route('/<int:character_id>/')
+@ns.route('/<int:character_id>/')
+@ns.response(404, "Character not found")
+@ns.param('character_id', "Character identifier")
 class MessagesController(Resource):
+    @ns.doc('receive_messages')
     @marshal_with(MessageModel, envelope='messages')
     def get(self, character_id):
-        return Pc.query.get(character_id).read_messages()
+        return Pc.get_or_404(character_id).read_messages()
 
+    @ns.doc('send_message')
     def put(self, character_id):
-        text = api_rest.payload.get('message') or 'Huh?'
+        text = 'Huh?'
+        if api.payload:
+            text = api.payload.get('message') or text
 
-        pc = Pc.query.get(character_id)
+        pc = Pc.get_or_404(character_id)
         message = pc.message(text)
         return {
             'result': True,
