@@ -155,20 +155,24 @@ class Pc(db.Model):
         new_x = self.x + x
         new_y = self.y + y
 
+        can_go = True
         # can_go = Location.can_go(new_x, new_y)
         # const canGo = state.castleId
         #   ? castleService.canGo(state.castleId, x, y)
         #   : worldMapService.canGo(x, y)
 
-        # if not can_go:
-        #     self.message()
-        #     return False
+        if not can_go:
+            self.message()
+            return False
 
         self.message(direction_id)
         self.x = new_x
         self.y = new_y
 
         self.eat()
+
+        db.session.add(self)
+        db.session.commit()
         return True
 
     def eat(self):
