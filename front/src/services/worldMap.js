@@ -9,7 +9,7 @@ import Api from './api'
 export default {
   // X_OFFSET,
   // Y_OFFSET,
-  getLocalMap: (x, y) => Api.get(`/map-${x}-${y}`)
+  getLocalMap: (x, y) => Api.get(`/locations/map-${x}-${y}`)
     .then(({ data }) => {
       const {
         location,

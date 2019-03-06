@@ -5,7 +5,7 @@
       :key="`location-${id}`"
       class="map-item"
       :style="`left: ${(item.x + xOffset) * 32}px; top: ${(item.y + yOffset) * 32}px;`"
-      :src="images[item.location_type]"
+      :src="images[item.location_type.image_id]"
       :title="JSON.stringify(item)"
     />
     <v-img
@@ -38,6 +38,7 @@
       playerImage: `${process.env.BASE_URL}ultima/pc.png`,
       castleImage: `${process.env.BASE_URL}ultima/castle.png`,
       images: [
+        null,
         `${process.env.BASE_URL}ultima/grass.png`,
         `${process.env.BASE_URL}ultima/water.png`,
         `${process.env.BASE_URL}ultima/trees.png`,

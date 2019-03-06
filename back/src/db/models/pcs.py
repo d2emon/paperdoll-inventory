@@ -1,6 +1,7 @@
 from flask import abort
 from app import db
 from .messages import Message
+from .locations import Location
 
 
 START_X = 18
@@ -18,8 +19,7 @@ def get_direction(direction_id):
     return DIRECTIONS.get(direction_id, (0, 0))
 
 
-class Race(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class NamedMixin:
     name = db.Column(db.String(16))
 
     def __init__(self, name=''):
@@ -32,32 +32,16 @@ class Race(db.Model):
         }
 
 
-class CharacterClass(db.Model):
+class Race(NamedMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(16))
-
-    def __init__(self, name=''):
-        self.name = name
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-        }
 
 
-class Sex(db.Model):
+class CharacterClass(NamedMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(16))
 
-    def __init__(self, name=''):
-        self.name = name
 
-    def serialize(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-        }
+class Sex(NamedMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
 
 
 class Pc(db.Model):
@@ -155,8 +139,7 @@ class Pc(db.Model):
         new_x = self.x + x
         new_y = self.y + y
 
-        can_go = True
-        # can_go = Location.can_go(new_x, new_y)
+        can_go = Location.can_go(new_x, new_y)
         # const canGo = state.castleId
         #   ? castleService.canGo(state.castleId, x, y)
         #   : worldMapService.canGo(x, y)

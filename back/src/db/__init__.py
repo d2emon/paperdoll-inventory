@@ -2,24 +2,26 @@ def init_db(db):
     if len(db.metadata.tables.keys()) <= 0:
         from .models.pcs import Pc, Race, CharacterClass, Sex
         from .models.messages import Message
+        from .models.locations import LocationType, Location
+        from .models.castles import Castle
     db.create_all()
     add_players(db)
+    generate_world(db)
 
 
 def add_players(db):
+    from .fixtures.pcs import RACES, CLASSES, SEXES
     from .models.pcs import Pc, Race, CharacterClass, Sex
-    db.session.add(Race("Human"))
-    db.session.add(Race('Elf'))
-    db.session.add(Race('Dwarf'))
-    db.session.add(Race('Bobbit'))
 
-    db.session.add(CharacterClass('Fighter'))
-    db.session.add(CharacterClass('Cleric'))
-    db.session.add(CharacterClass('Wizard'))
-    db.session.add(CharacterClass('Thief'))
+    for race in RACES:
+        db.session.add(Race(race))
 
-    db.session.add(Sex('Male'))
-    db.session.add(Sex('Female'))
+    for character_class in CLASSES:
+        db.session.add(CharacterClass(character_class))
+
+    for sex in SEXES:
+        db.session.add(Sex(sex))
+    db.session.commit()
 
     kikoskia = Pc(
         name='Kikoskia',
@@ -36,4 +38,27 @@ def add_players(db):
         y=4,
     )
     db.session.add(kikoskia)
+    db.session.commit()
+
+
+def generate_world(db):
+    from .fixtures.locations import LOCATION_TYPES, PASSABLE, WORLD_MAP
+    from .models.locations import LocationType, Location
+
+    for location_id, name in enumerate(LOCATION_TYPES):
+        passable = PASSABLE.get(location_id, True)
+        db.session.add(LocationType(
+            name=name,
+            image_id=location_id + 1,
+            passable=passable
+        ))
+    db.session.commit()
+
+    for y, row in enumerate(WORLD_MAP):
+        for x, location_type_id in enumerate(row):
+            db.session.add(Location(
+                x=x,
+                y=y,
+                location_type_id=location_type_id + 1,
+            ))
     db.session.commit()

@@ -18,5 +18,6 @@ api = Api(
 
 from .messages import *
 from .player import *
+from .locations import *
 
 from .resources import *

@@ -1,11 +1,12 @@
 from flask import request
 from flask_restplus import Resource
 from datetime import datetime
-from data.castles import Castle
-from data.locations import Location
+# from data.castles import Castle
+# from data.locations import Location
 from . import api
 from .security import SecureResource
-
+from db.models.locations import Location
+from db.models.castles import Castle
 
 @api.route('/languages')
 class Languages(Resource):
@@ -51,39 +52,12 @@ class SecureResourceOne(SecureResource):
         return {'timestamp': timestamp}
 
 
-@api.route('/map-<int:x>-<int:y>')
-class LocalMap(Resource):
-    def get(self, x, y):
-        location = Location.by_coords(x, y)
-        if location:
-            location = location.serialize()
-        locations = map(lambda record: record.serialize(), Location.nearby(x, y))
-        castles = map(lambda record: record.serialize(), Castle.nearby(x, y))
-        return {
-            'location': location,
-            'localMap': list(locations),
-            'castles': list(castles),
-            'cities': [],
-        }
-
-
-@api.route('/location-<int:x>-<int:y>')
-class Locations(Resource):
-    def get(self, x, y):
-        location = Location.by_coords(x, y)
-        if location:
-            location = location.serialize()
-        return {
-            'location': location,
-        }
-
-
 @api.route('/castle/<int:castle_id>')
 class Castles(Resource):
     def get(self, castle_id):
-        castle = Castle.get_record(castle_id)
-        if castle:
-            castle_dict = castle.serialize()
-            castle_dict['locations'] = castle.locations
-            castle = castle_dict
+        castle = Castle.query.get(castle_id)
+        # if castle:
+        #     castle_dict = castle.serialize()
+        #     castle_dict['locations'] = castle.locations
+        #     castle = castle_dict
         return {'castle': castle}
