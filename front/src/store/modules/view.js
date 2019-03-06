@@ -12,6 +12,7 @@ const getters = {}
 
 const mutations = {
   setLocation: (state, location) => { state.location = location },
+  setCastle: (state, castle) => { state.castle = castle },
   setLocal: (state, { x, y, localMap }) => {
     state.localMap = localMap.map(item => ({
       ...item,
@@ -39,11 +40,27 @@ const actions = {
   fetchView: ({ state, commit }, { x, y }) => {
     return worldMapService
       .getLocalMap(x, y)
-      .then(({ location, localMap, castles, cities }) => {
-        commit('setLocation', location)
+      .then(({
+        localMap,
+        castles,
+        cities,
+
+        location,
+        castle,
+      }) => {
+        console.log({
+          localMap,
+          castles,
+          cities,
+
+          location,
+          castle,
+        })
         commit('setLocal', { x, y, localMap })
         commit('setCastles', { x, y, castles })
         commit('setCities', { x, y, cities })
+        commit('setLocation', location)
+        commit('setCastle', castle)
       })
   }
 }

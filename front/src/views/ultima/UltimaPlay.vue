@@ -162,7 +162,7 @@
             <span class="hotkey">E</span>nter
           </h5>
           <v-btn
-            :disabled="!location || !location.castle_id || inCastle"
+            :disabled="!castle || !castle.id || inCastle"
             @click="enterCastle"
           >
             <span class="hotkey">E</span>nter
@@ -255,7 +255,10 @@
         'position',
         'castleId'
       ]),
-      ...mapState('view', ['location'])
+      ...mapState('view', [
+        'location',
+        'castle',
+      ])
     },
     mounted () {
       if (!this.characterId) return this.$router.push('/ultima')

@@ -10,3 +10,10 @@ LocationModel = api.model('Location', {
     'y': fields.Integer,
     'location_type': fields.Nested(LocationTypeModel),
 })
+
+CastleModel = api.model('Castle', {
+    'id': fields.Integer,
+    'x': fields.Integer,
+    'y': fields.Integer,
+    'name': fields.String,
+})

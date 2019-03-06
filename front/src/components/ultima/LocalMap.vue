@@ -75,6 +75,6 @@
   .player-character {
     top: 128px;
     left: 288px;
-    z-index: 10;
+    /* z-index: 10; */
   }
 </style>

@@ -5,8 +5,10 @@ def init_db(db):
         from .models.locations import LocationType, Location
         from .models.castles import Castle
     db.create_all()
+
     add_players(db)
     generate_world(db)
+    generate_castles(db)
 
 
 def add_players(db):
@@ -61,4 +63,27 @@ def generate_world(db):
                 y=y,
                 location_type_id=location_type_id + 1,
             ))
+    db.session.commit()
+
+
+def generate_castles(db):
+    from .fixtures.castles import CASTLES
+    from .models.castles import Castle
+
+    for castle_data in CASTLES:
+        castle = Castle(**castle_data)
+
+        castle_map = castle_data.get('castle_map', [[]])
+        for x, row in enumerate(castle_map):
+            for y, location_type_id in enumerate(row):
+                if not location_type_id:
+                    continue
+                # print(location_type_id)
+                # CastleLocation(
+                #     castle_id=castle.id,
+                #     x=x,
+                #     y=y,
+                #     location_type_id=location_type_id
+                # ).save()
+        db.session.add(castle)
     db.session.commit()

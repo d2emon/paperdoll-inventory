@@ -1,6 +1,6 @@
 from flask_restplus import Resource, marshal, marshal_with
 from . import ns
-from .models import LocationModel
+from .models import LocationModel, CastleModel
 from db.models.locations import Location
 from db.models.castles import Castle
 
@@ -12,10 +12,11 @@ class LocalMap(Resource):
     @ns.doc('get_map')
     def get(self, x, y):
         return {
-            'location': marshal(Location.by_coords(x, y).first(), LocationModel),
             'localMap': marshal(Location.nearby(x, y).all(), LocationModel),
-            'castles': marshal(Castle.nearby(x, y).all(), LocationModel),
+            'castles': marshal(Castle.nearby(x, y).all(), CastleModel),
             'cities': [],
+            'location': marshal(Location.by_coords(x, y).first(), LocationModel),
+            'castle': marshal(Castle.by_coords(x, y).first(), CastleModel),
         }
 
 
