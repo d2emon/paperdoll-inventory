@@ -42,7 +42,6 @@ const mutations = {
   setClasses: (state, classes) => { state.classes = classes },
 
   setCharacter: (state, character) => {
-    console.log(character)
     if (!character) {
       state.characterId = null
       return
@@ -76,9 +75,7 @@ const mutations = {
       y: character.y
     }
 
-    state.castleId = character.castle
-      ? character.castle.id
-      : null
+    state.castleId = character.castle_id
   },
   setStat: (state, { stat, value }) => { state.stats[stat] = value },
   setRace: (state, race) => { state.race = race },
@@ -155,11 +152,9 @@ const actions = {
   doAction: ({ state, dispatch }, { action, params }) => {
     return pcService.doAction(state.characterId, action, params)
       .then(() => dispatch('loadCharacter', state.characterId))
+      .then(() => dispatch('castle/fetchCastle', state.castleId, { root: true }))
   },
 
-  moveCharacter: ({ state, dispatch }, params) => {
-    return dispatch('doAction', { action: 'go', params })
-  },
   enterCastle: ({ commit, dispatch }, params) => {
     // commit('setCastle', castle.castleId)
     // commit('setPosition', castle.entrance)
@@ -167,14 +162,7 @@ const actions = {
     return dispatch('doAction', { action: 'enter', params })
   },
   exitCastle: ({ commit }, params) => {
-      // const { castle } = params
-      // if (!castle) return dispatch('sendMessage', { playerId })
-
-      // dispatch('castle/fetchCastle', null, { root: true })
-
     // commit('setCastle', null)
-
-    // if (!castle) return
     // commit('setPosition', { x: castle.x, y: castle.y })
 
     return dispatch('doAction', { action: 'exit', params })

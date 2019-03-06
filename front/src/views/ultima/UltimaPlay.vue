@@ -166,7 +166,7 @@
             @click="enterCastle"
           >
             <span class="hotkey">E</span>nter
-          </v-btn> {{ castleId }}
+          </v-btn>
           <p>
             Enter a town, castle, dungeon, or other landmark. You must be standing on the entrance before entering.
           </p>

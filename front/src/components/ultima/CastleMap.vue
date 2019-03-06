@@ -1,11 +1,12 @@
 <template>
   <div class="game-map">
     <v-img
-      v-for="(item, id) in localMap"
+      v-for="(item, id) in locations"
       :key="`location-${id}`"
       class="map-item"
       :style="`left: ${item.x * 16}px; top: ${item.y * 16}px;`"
-      :src="images[item.locationType]"
+      :src="images[item.location_type.image_id]"
+      :title="JSON.stringify(item)"
     />
     <v-img
       v-for="(item, id) in people"
@@ -23,7 +24,10 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
+  import {
+    mapState,
+    mapActions,
+  } from 'vuex'
 
   export default {
     name: 'CastleMap',
@@ -39,12 +43,19 @@
     }),
     computed: {
       ...mapState('castle', [
-        'localMap',
+        'locations',
         'people',
         'castle'
       ]),
-      ...mapState('pc', ['position'])
-    }
+      ...mapState('pc', [
+        'position',
+        'castleId',
+      ])
+    },
+    methods: {
+      ...mapActions('castle', ['fetchCastle'])
+    },
+    mounted () { this.fetchCastle(this.castleId) }
   }
 </script>
 

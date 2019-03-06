@@ -67,23 +67,31 @@ def generate_world(db):
 
 
 def generate_castles(db):
-    from .fixtures.castles import CASTLES
-    from .models.castles import Castle
+    from .fixtures.castles import LOCATION_TYPES, CASTLES
+    from .models.castles import CastleLocationType, CastleLocation, Castle
+
+    for location_id, name in enumerate(LOCATION_TYPES):
+        db.session.add(CastleLocationType(
+            name=name,
+            image_id=location_id + 1,
+            passable=location_id <= 0,
+        ))
+    db.session.commit()
 
     for castle_data in CASTLES:
         castle = Castle(**castle_data)
+        db.session.add(castle)
+        db.session.commit()
 
         castle_map = castle_data.get('castle_map', [[]])
-        for x, row in enumerate(castle_map):
-            for y, location_type_id in enumerate(row):
+        for y, row in enumerate(castle_map):
+            for x, location_type_id in enumerate(row):
                 if not location_type_id:
                     continue
-                # print(location_type_id)
-                # CastleLocation(
-                #     castle_id=castle.id,
-                #     x=x,
-                #     y=y,
-                #     location_type_id=location_type_id
-                # ).save()
-        db.session.add(castle)
-    db.session.commit()
+                db.session.add(CastleLocation(
+                    castle_id=castle.id,
+                    x=x,
+                    y=y,
+                    location_type_id=location_type_id
+                ))
+        db.session.commit()

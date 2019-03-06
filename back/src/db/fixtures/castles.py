@@ -1,3 +1,10 @@
+LOCATION_TYPES = [
+    'Grass',
+    'Wall',
+    'Door',
+    'Pond',
+]
+
 CASTLE_MAP_1 = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -25,6 +32,8 @@ CASTLES = [
         'x': 9,
         'y': 4,
         'name': "The Castle of Lord British",
+        'entrance_x': 0,
+        'entrance_y': 9,
         'charactersData': [
             """
             {x: 1, y: 6, characterTypeId: 'guard'},

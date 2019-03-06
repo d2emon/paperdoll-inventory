@@ -1,10 +1,11 @@
 // import DB from './db'
 // import actions from './db/actions'
 
-export default {
-  /*
-  fetchCastle: DB.castles.getItem,
+import Api from "./api";
 
+export default {
+  fetchCastle: castleId => Api.get(`/castles/${castleId}/`).then(({ data }) => data),
+  /*
   getCastleAt: (x, y) => DB.castles.selectItem({ location: { x, y } }),
   getCastlesIn: (x0, x1, y0, y1) => DB.castles.selectItems({ rect: { x0, x1, y0, y1 } }),
 

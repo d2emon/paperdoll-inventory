@@ -2,7 +2,7 @@ import castleService from '@/services/castles'
 import { getDirection } from '@/helpers/directions'
 
 const state = {
-  localMap: [],
+  locations: [],
   people: [],
   castle: null,
 }
@@ -14,18 +14,21 @@ const mutations = {
     state.castle = castle
 
     if (!castle) {
-      state.localMap = []
+      state.locations = []
       state.people = []
       return
     }
 
-    state.localMap = castle.localMap.map(item => ({
-      ...item
+    state.locations = castle.locations.map(item => ({
+      ...item,
+      imageId: item.location_type.image_id
     }))
+    /*
     state.people = castle.people.map((item, personId) => ({
       ...item,
       personId
     }))
+    */
   },
   movePerson: (state, { personId, x, y }) => {
     const person = state.people[personId]

@@ -89,8 +89,8 @@ class MoveCharacter(Resource):
 
             character.message("Entering... <br />{}".format(castle.name))
 
-            character.x = 0
-            character.y = 0
+            character.x = castle.entrance_x
+            character.y = castle.entrance_y
             character.castle = castle
             db.session.add(character)
             db.session.commit()

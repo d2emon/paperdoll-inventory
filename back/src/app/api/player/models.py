@@ -30,5 +30,5 @@ CharacterModel = api.model('Character', {
     'sex': fields.Nested(LookupModel, skip_none=True),
     'character_class': fields.Nested(LookupModel, skip_none=True),
 
-    'castle': fields.Nested(LookupModel, skip_none=True),
+    'castle_id': fields.Integer,
 })
