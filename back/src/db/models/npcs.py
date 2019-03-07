@@ -42,30 +42,31 @@ class Npc(LocalMixin, db.Model):
             return False
         return self.npc_type.walking
 
-    def walk(self, viewer):
-        x, y = random.choice((
-            (0, -1),
-            (1, 0),
-            (0, 1),
-            (-1, 0),
-        ))
-        new_x = self.x + x
-        new_y = self.y + y
-        if self.castle:
-            if not self.castle.can_go(new_x, new_y):
-                return
-        self.x = new_x
-        self.y = new_y
+    def walk(self, x, y):
+        def action(viewer):
+            new_x = self.x + x
+            new_y = self.y + y
+            if self.castle:
+                if not self.castle.child_can_go(new_x, new_y):
+                    return
+            self.x = new_x
+            self.y = new_y
+        return action
 
-    def sing(self, viewer):
-        viewer.message("{} sings:<br />{}".format(self.name, self.song))
+    def sing(self, song):
+        def action(viewer):
+            viewer.message("{} sings:<br />{}".format(self.name, song))
+        return action
 
     def next_step(self, viewer):
         actions = []
         if self.walking:
-            actions.append(self.walk)
+            actions.append(self.walk(0, -1))
+            actions.append(self.walk(1, 0))
+            actions.append(self.walk(0, 1))
+            actions.append(self.walk(-1, 0))
         if self.song:
-            actions.append(self.sing)
+            actions.append(self.sing(self.song))
         if len(actions) <= 0:
             return
 

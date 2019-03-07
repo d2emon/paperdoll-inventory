@@ -1,11 +1,7 @@
 from flask import abort
 from app import db
-from .local_mixin import LocalMixin
+from .local_mixin import LocalMixin, MapMixin
 from .npcs import Npc
-
-
-X_MAX = 38
-Y_MAX = 18
 
 
 class CastleLocationType(db.Model):
@@ -19,8 +15,37 @@ class CastleLocationType(db.Model):
         self.image_id = fields.get('image_id')
         self.passable = fields.get('passable', True)
 
+    @property
+    def is_pond(self):
+        return self.id == 3
 
-class Castle(LocalMixin, db.Model):
+
+class CastleLocation(LocalMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    location_type_id = db.Column(db.Integer, db.ForeignKey('castle_location_type.id'))
+    location_type = db.relationship('CastleLocationType')
+
+    map_id = db.Column(db.Integer, db.ForeignKey('castle.id'))
+    castle = db.relationship(
+        'Castle',
+        backref=db.backref('locations'),
+    )
+
+    def __init__(self, **fields):
+        self.map_id = fields.get('castle_id')
+        self.x = fields.get('x')
+        self.y = fields.get('y')
+        self.location_type_id = fields.get('location_type_id')
+
+    @property
+    def passable(self):
+        if self.location_type:
+            return self.location_type.passable
+        return True
+
+
+class Castle(LocalMixin, MapMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128))
     entrance_x = db.Column(db.Integer)
@@ -29,6 +54,11 @@ class Castle(LocalMixin, db.Model):
 
     # location_type_id = db.Column(db.Integer, db.ForeignKey('location_type.id'))
     # location_type = db.relationship('LocationType')
+
+    X_MAX = 38
+    Y_MAX = 18
+
+    child_model = CastleLocation
 
     def __init__(self, **fields):
         self.x = fields.get('x')
@@ -42,31 +72,19 @@ class Castle(LocalMixin, db.Model):
     def get_or_404(cls, castle_id):
         castle = cls.query.get(castle_id)
         if castle is None:
-            abort(404, "Character #{} doesn't exists".format(castle_id))
+            abort(404, "Castle #{} doesn't exists".format(castle_id))
         return castle
 
     @property
     def passable(self):
         return True
 
-    def can_go(self, x, y):
-        def locatin_passable():
-            item = CastleLocation.by_coords(x, y).filter_by(castle_id=self.id).first()
-            if item is None:
-                return CastleLocation.default_passable
-            return item.passable
+    def characters_passable(self, x, y):
+        item = Npc.by_coords(x, y).filter_by(castle_id=self.id).first()
+        if item is None:
+            return Npc.default_passable
+        return item.passable
 
-        def character_passable():
-            item = Npc.by_coords(x, y).filter_by(castle_id=self.id).first()
-            if item is None:
-                return Npc.default_passable
-            return item.passable
-
-        if x < 0 or x > X_MAX:
-            return False
-        if y < 0 or y > Y_MAX:
-            return False
-        return locatin_passable() and character_passable()
     # @property
     # def locations(self):
     #     return CastleLocation.by_castle(self.id)
@@ -74,28 +92,3 @@ class Castle(LocalMixin, db.Model):
     def next_step(self, viewer):
         for character in self.characters:
             character.next_step(viewer)
-
-
-class CastleLocation(LocalMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-
-    location_type_id = db.Column(db.Integer, db.ForeignKey('castle_location_type.id'))
-    location_type = db.relationship('CastleLocationType')
-
-    castle_id = db.Column(db.Integer, db.ForeignKey('castle.id'))
-    castle = db.relationship(
-        'Castle',
-        backref=db.backref('locations'),
-    )
-
-    def __init__(self, **fields):
-        self.castle_id = fields.get('castle_id')
-        self.x = fields.get('x')
-        self.y = fields.get('y')
-        self.location_type_id = fields.get('location_type_id')
-
-    @property
-    def passable(self):
-        if self.location_type:
-            return self.location_type.passable
-        return True

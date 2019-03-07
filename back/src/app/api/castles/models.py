@@ -1,16 +1,7 @@
 from flask_restplus import fields
 from . import api
+from ..locations.models import LocationTypeModel, LocationModel
 
-
-LocationTypeModel = api.model('LocationType', {
-    'image_id': fields.Integer,
-})
-
-LocationModel = api.model('Location', {
-    'x': fields.Integer,
-    'y': fields.Integer,
-    'location_type': fields.Nested(LocationTypeModel),
-})
 
 CharacterModel = api.model('Character', {
     'x': fields.Integer,

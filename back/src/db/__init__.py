@@ -93,11 +93,16 @@ def generate_npcs(db):
 
 def generate_world(db):
     from .fixtures.locations import WORLD_MAP
-    from .models.locations import Location
+    from .models.locations import Location, GameMap
+
+    game_map = GameMap()
+    db.session.add(game_map)
+    db.session.commit()
 
     for y, row in enumerate(WORLD_MAP):
         for x, location_type_id in enumerate(row):
             db.session.add(Location(
+                map_id=game_map.id,
                 x=x,
                 y=y,
                 location_type_id=location_type_id + 1,

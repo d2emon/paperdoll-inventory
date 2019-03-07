@@ -73,6 +73,9 @@ class Pc(db.Model):
     class_id = db.Column(db.Integer, db.ForeignKey('character_class.id'))
     character_class = db.relationship('CharacterClass')
 
+    map_id = db.Column(db.Integer, db.ForeignKey('game_map.id'))
+    game_map = db.relationship('GameMap')
+
     castle_id = db.Column(db.Integer, db.ForeignKey('castle.id'))
     castle = db.relationship('Castle')
 
@@ -97,6 +100,9 @@ class Pc(db.Model):
 
         self.x = fields.get('x', START_X)
         self.y = fields.get('y', START_Y)
+
+        self.map_id = fields.get('map_id', 1)
+        self.castle_id = fields.get('castle_id')
 
     @classmethod
     def get_or_404(cls, character_id):
@@ -123,15 +129,28 @@ class Pc(db.Model):
         Message.clear(self.id)
         # self.messages.delete()
 
+    @property
+    def actual_map(self):
+        if self.castle:
+            return self.castle
+        return self.game_map
+
+    @property
+    def nesw(self):
+        actual_map = self.actual_map
+        return {
+            'n': actual_map.child_by_coords(self.x, self.y - 1).first(),
+            'e': actual_map.child_by_coords(self.x + 1, self.y).first(),
+            's': actual_map.child_by_coords(self.x, self.y + 1).first(),
+            'w': actual_map.child_by_coords(self.x - 1, self.y).first(),
+        }
+
     def walk(self, direction_id):
         x, y = get_direction(direction_id)
         new_x = self.x + x
         new_y = self.y + y
 
-        if self.castle:
-            can_go = self.castle.can_go(new_x, new_y)
-        else:
-            can_go = Location.can_go(new_x, new_y)
+        can_go = self.actual_map.child_can_go(new_x, new_y)
 
         if not can_go:
             self.message()
@@ -143,14 +162,30 @@ class Pc(db.Model):
 
         self.save()
 
-        if self.castle:
-            self.castle.next_step(self)
-        else:
-            self.eat()
+        self.actual_map.next_step(self)
         return self.save()
 
     def eat(self):
         self.food -= 0.5
+
+    def drop(self, **kwargs):
+        if self.castle is None:
+            self.message()
+            return False
+
+        ponds = filter(lambda item: item and item.location_type.is_pond, self.nesw.items())
+        if len(ponds) <= 0:
+            self.message()
+            return False
+
+        pence = int(kwargs.get('pence'))
+        if pence:
+            self.coin = max(0, self.coin - pence)
+            self.message("Drop Pence: {}".format(pence))
+            self.message("Shazam!")
+            return True
+        self.message('Drop Pence, Weapon, Armor')
+        return False
 
     def enter_castle(self, castle_id):
         castle = Castle.query.get(castle_id)

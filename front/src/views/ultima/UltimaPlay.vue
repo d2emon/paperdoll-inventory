@@ -156,7 +156,8 @@
         </v-flex>
         <v-flex xs3>
           <v-btn
-            @click="enterCastle"
+            :disabled="!canDrop"
+            @click="toDrop = true"
           >
             <span class="hotkey">D</span>rop
           </v-btn>
@@ -228,6 +229,12 @@
         </v-flex>
       </v-layout>
     </v-card-actions>
+
+    <drop-modal
+      v-model="toDrop"
+      :coin="coin"
+      @drop="drop"
+    />
   </v-card>
 </template>
 
@@ -243,18 +250,39 @@
       CharacterSummary: () => import('@/components/ultima/CharacterSummary'),
       LocalMap: () => import('@/components/ultima/LocalMap'),
       CastleMap: () => import('@/components/ultima/CastleMap'),
-      GameConsole: () => import('@/components/ultima/GameConsole')
+      GameConsole: () => import('@/components/ultima/GameConsole'),
+      DropModal: () => import('@/modals/DropModal')
     },
+    data: () => ({
+      toDrop: false
+    }),
     computed: {
       ...mapState('pc', [
         'characterId',
         'position',
-        'castleId'
+        'castleId',
+        'coin',
+        'nesw'
       ]),
       ...mapState('view', [
         'location',
         'castle',
       ]),
+      canDrop() {
+        if (!this.castleId) return false;
+        if (!this.castle) return false;
+        if (!this.nesw) return false;
+
+        return Object.keys(this.nesw).reduce((result, direction) => {
+          if (result) return true
+
+          const location = this.nesw[direction]
+          if (location && location.location_type) {
+            return location.location_type.is_pond
+          }
+          return false
+        }, false)
+      },
       canEnter() { return this.castle && !this.castleId },
       canExit() { return this.castle && !!this.castleId },
     },
@@ -266,24 +294,10 @@
     methods: {
       ...mapActions('view', ['fetchView']),
       ...mapActions('pc', ['doAction']),
-      goDirection (direction) {
-        this.doAction({
-          action: 'go',
-          params: { direction }
-        })
-      },
-      enterCastle () {
-        this.doAction({
-          action: 'enter',
-          params: { castle: this.castle && this.castle.id }
-        })
-      },
-      exitCastle () {
-        this.doAction({
-          action: 'exit',
-          params: {}
-        })
-      }
+      goDirection (direction) { this.doAction({ action: 'go', params: { direction } }) },
+      drop (params) { console.log(params); this.doAction({ action: 'drop', params }) },
+      enterCastle () { this.doAction({ action: 'enter', params: { castle: this.castle && this.castle.id } }) },
+      exitCastle () { this.doAction({ action: 'exit', params: {} }) }
     }
   }
 </script>

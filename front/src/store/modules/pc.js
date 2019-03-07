@@ -26,6 +26,7 @@ const state = {
 
   castleId: 0,
   position: {},
+  nesw: {},
 
   error: null
 }
@@ -76,6 +77,7 @@ const mutations = {
     }
 
     state.castleId = character.castle_id
+    state.nesw = character.nesw
   },
   setStat: (state, { stat, value }) => { state.stats[stat] = value },
   setRace: (state, race) => { state.race = race },
@@ -149,16 +151,14 @@ const actions = {
     commit('recalcPoints')
   },
 
-  doAction: ({ state, dispatch }, { action, params }) => {
-    console.log({ action, params })
-    return pcService.doAction(state.characterId, action, params)
-      .then(() => dispatch('loadCharacter', state.characterId))
-      .then(() => { if (state.castleId) return dispatch('castle/fetchCastle', state.castleId, { root: true }) })
-      .then(() => Promise.all([
-        dispatch('gameConsole/receiveMessages', state.characterId, { root: true }),
-        dispatch('view/fetchView', state.position, { root: true }),
-      ]))
-  },
+  doAction: ({ state, dispatch }, { action, params }) => pcService
+    .doAction(state.characterId, action, params)
+    .then(() => dispatch('loadCharacter', state.characterId))
+    .then(() => { if (state.castleId) return dispatch('castle/fetchCastle', state.castleId, { root: true }) })
+    .then(() => Promise.all([
+      dispatch('gameConsole/receiveMessages', state.characterId, { root: true }),
+      dispatch('view/fetchView', state.position, { root: true }),
+    ])),
 }
 
 export default {
