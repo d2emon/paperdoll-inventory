@@ -4,6 +4,10 @@ from .local_mixin import LocalMixin
 from .npcs import Npc
 
 
+X_MAX = 38
+Y_MAX = 18
+
+
 class CastleLocationType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     image_id = db.Column(db.Integer)
@@ -21,6 +25,7 @@ class Castle(LocalMixin, db.Model):
     name = db.Column(db.String(128))
     entrance_x = db.Column(db.Integer)
     entrance_y = db.Column(db.Integer)
+    is_city = db.Column(db.Integer)
 
     # location_type_id = db.Column(db.Integer, db.ForeignKey('location_type.id'))
     # location_type = db.relationship('LocationType')
@@ -31,6 +36,7 @@ class Castle(LocalMixin, db.Model):
         self.name = fields.get('name')
         self.entrance_x = fields.get('entrance_x')
         self.entrance_y = fields.get('entrance_y')
+        self.is_city = fields.get('is_city')
 
     @classmethod
     def get_or_404(cls, castle_id):
@@ -56,6 +62,10 @@ class Castle(LocalMixin, db.Model):
                 return Npc.default_passable
             return item.passable
 
+        if x < 0 or x > X_MAX:
+            return False
+        if y < 0 or y > Y_MAX:
+            return False
         return locatin_passable() and character_passable()
     # @property
     # def locations(self):

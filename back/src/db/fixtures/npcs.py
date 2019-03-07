@@ -1,16 +1,21 @@
 GUARD = 1
-LORD = 2
-PRINCESS = 3
-CITIZEN1 = 4
+SHOPKEEPER = 2
+LORD = 3
+PRINCESS = 4
+CITIZEN1 = 5
+CITIZEN2 = 6
 
 WALKING = {
     PRINCESS: True,
     CITIZEN1: True,
+    CITIZEN2: True,
 }
 
 NPC_TYPES = [
     'Guard',
+    'Shopkeeper',
     'Lord',
     'Princess',
+    'Citizen',
     'Citizen',
 ]

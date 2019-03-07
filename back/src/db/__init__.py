@@ -105,34 +105,43 @@ def generate_world(db):
     db.session.commit()
 
 
-def generate_castles(db):
-    from .fixtures.castles import CASTLES
+def generate_castle(db, castle_data, is_city):
     from .models.castles import CastleLocation, Castle
     from .models.npcs import Npc
 
-    for castle_data in CASTLES:
-        castle = Castle(**castle_data)
-        db.session.add(castle)
-        db.session.commit()
+    castle = Castle(is_city=is_city, **castle_data)
+    db.session.add(castle)
+    db.session.commit()
 
-        npcs = castle_data.get('characters', [])
-        for npc_data in npcs:
-            npc = Npc(
+    npcs = castle_data.get('characters', [])
+    for npc_data in npcs:
+        npc = Npc(
+            castle_id=castle.id,
+            **npc_data
+        )
+        db.session.add(npc)
+    db.session.commit()
+
+    castle_map = castle_data.get('castle_map', [[]])
+    for y, row in enumerate(castle_map):
+        for x, location_type_id in enumerate(row):
+            if not location_type_id:
+                continue
+            db.session.add(CastleLocation(
                 castle_id=castle.id,
-                **npc_data
-            )
-            db.session.add(npc)
-        db.session.commit()
+                x=x,
+                y=y,
+                location_type_id=location_type_id
+            ))
+    db.session.commit()
 
-        castle_map = castle_data.get('castle_map', [[]])
-        for y, row in enumerate(castle_map):
-            for x, location_type_id in enumerate(row):
-                if not location_type_id:
-                    continue
-                db.session.add(CastleLocation(
-                    castle_id=castle.id,
-                    x=x,
-                    y=y,
-                    location_type_id=location_type_id
-                ))
-        db.session.commit()
+
+def generate_castles(db):
+    from .fixtures.castles import CASTLES
+    from .fixtures.cities import CITIES
+
+    for castle_data in CASTLES:
+        generate_castle(db, castle_data, False)
+
+    for city_data in CITIES:
+        generate_castle(db, city_data, False)
