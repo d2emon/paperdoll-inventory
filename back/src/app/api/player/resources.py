@@ -85,15 +85,7 @@ class MoveCharacter(Resource):
             character.walk(direction_id)
         elif action == 'enter':
             castle_id = request.form.get('castle')
-            castle = Castle.get_or_404(castle_id)
-
-            character.message("Entering... <br />{}".format(castle.name))
-
-            character.x = castle.entrance_x
-            character.y = castle.entrance_y
-            character.castle = castle
-            db.session.add(character)
-            db.session.commit()
+            character.enter_castle(castle_id)
         elif action == 'exit':
             character.message("Exiting...")
 

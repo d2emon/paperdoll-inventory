@@ -162,7 +162,7 @@
             <span class="hotkey">E</span>nter
           </h5>
           <v-btn
-            :disabled="!castle || !castle.id || inCastle"
+            :disabled="!castle || !castle.id"
             @click="enterCastle"
           >
             <span class="hotkey">E</span>nter
@@ -215,7 +215,7 @@
             <span class="hotkey">X</span>-it
           </h5>
           <v-btn
-            :disabled="!inCastle"
+            :disabled="castle && castle.id"
             @click="exitCastle"
           >
             <span class="hotkey">X</span>-it
@@ -246,9 +246,6 @@
       CastleMap: () => import('@/components/ultima/CastleMap'),
       GameConsole: () => import('@/components/ultima/GameConsole')
     },
-    data: () => ({
-      inCastle: false
-    }),
     computed: {
       ...mapState('pc', [
         'characterId',
@@ -289,7 +286,6 @@
           command: 'Enter',
           castle: this.castle.id
         })
-          .then(() => { this.inCastle = true })
           .then(() => Promise.all([
             this.receiveMessages(this.characterId),
             this.fetchView(this.position)
@@ -302,7 +298,6 @@
           castle: this.castle.id,
           location: this.castle
         })
-          .then(() => { this.inCastle = false })
           .then(() => Promise.all([
             this.receiveMessages(this.characterId),
             this.fetchView(this.position)

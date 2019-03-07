@@ -4,9 +4,15 @@ def init_db(db):
         from .models.messages import Message
         from .models.locations import LocationType, Location
         from .models.castles import Castle
+        from .models.npcs import Npc
     db.create_all()
 
     add_players(db)
+
+    generate_locations(db)
+    generate_castle_locations(db)
+    generate_npcs(db)
+
     generate_world(db)
     generate_castles(db)
 
@@ -43,9 +49,9 @@ def add_players(db):
     db.session.commit()
 
 
-def generate_world(db):
-    from .fixtures.locations import LOCATION_TYPES, PASSABLE, WORLD_MAP
-    from .models.locations import LocationType, Location
+def generate_locations(db):
+    from .fixtures.locations import LOCATION_TYPES, PASSABLE
+    from .models.locations import LocationType
 
     for location_id, name in enumerate(LOCATION_TYPES):
         passable = PASSABLE.get(location_id, True)
@@ -55,6 +61,39 @@ def generate_world(db):
             passable=passable
         ))
     db.session.commit()
+
+
+def generate_castle_locations(db):
+    from .fixtures.castles import LOCATION_TYPES, CASTLES
+    from .models.castles import CastleLocationType
+
+    for location_id, name in enumerate(LOCATION_TYPES):
+        passable = False
+        db.session.add(CastleLocationType(
+            name=name,
+            image_id=location_id + 1,
+            passable=passable,
+        ))
+    db.session.commit()
+
+
+def generate_npcs(db):
+    from .fixtures.npcs import NPC_TYPES, WALKING
+    from .models.npcs import NpcType
+
+    for npc_id, name in enumerate(NPC_TYPES):
+        walking = WALKING.get(npc_id + 1, False)
+        db.session.add(NpcType(
+            name=name,
+            image_id=npc_id + 1,
+            walking=walking,
+        ))
+    db.session.commit()
+
+
+def generate_world(db):
+    from .fixtures.locations import WORLD_MAP
+    from .models.locations import Location
 
     for y, row in enumerate(WORLD_MAP):
         for x, location_type_id in enumerate(row):
@@ -67,20 +106,22 @@ def generate_world(db):
 
 
 def generate_castles(db):
-    from .fixtures.castles import LOCATION_TYPES, CASTLES
-    from .models.castles import CastleLocationType, CastleLocation, Castle
-
-    for location_id, name in enumerate(LOCATION_TYPES):
-        db.session.add(CastleLocationType(
-            name=name,
-            image_id=location_id + 1,
-            passable=location_id <= 0,
-        ))
-    db.session.commit()
+    from .fixtures.castles import CASTLES
+    from .models.castles import CastleLocation, Castle
+    from .models.npcs import Npc
 
     for castle_data in CASTLES:
         castle = Castle(**castle_data)
         db.session.add(castle)
+        db.session.commit()
+
+        npcs = castle_data.get('characters', [])
+        for npc_data in npcs:
+            npc = Npc(
+                castle_id=castle.id,
+                **npc_data
+            )
+            db.session.add(npc)
         db.session.commit()
 
         castle_map = castle_data.get('castle_map', [[]])

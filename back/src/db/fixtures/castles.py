@@ -1,3 +1,5 @@
+from .npcs import GUARD, LORD, PRINCESS, CITIZEN1
+
 LOCATION_TYPES = [
     'Grass',
     'Wall',
@@ -34,26 +36,22 @@ CASTLES = [
         'name': "The Castle of Lord British",
         'entrance_x': 0,
         'entrance_y': 9,
-        'charactersData': [
-            """
-            {x: 1, y: 6, characterTypeId: 'guard'},
-            {x: 17, y: 6, characterTypeId: 'guard'},
-            {x: 17, y: 11, characterTypeId: 'guard'},
-            {x: 25, y: 7, characterTypeId: 'guard'},
-            {x: 25, y: 12, characterTypeId: 'guard'},
-            {x: 33, y: 4, characterTypeId: 'lord'},
+        'characters': [
+            {'x': 1, 'y': 6, 'npc_type_id': GUARD},
+            {'x': 17, 'y': 6, 'npc_type_id': GUARD},
+            {'x': 17, 'y': 11, 'npc_type_id': GUARD},
+            {'x': 25, 'y': 7, 'npc_type_id': GUARD},
+            {'x': 25, 'y': 12, 'npc_type_id': GUARD},
+            {'x': 33, 'y': 4, 'npc_type_id': LORD},
             {
-                                    x: 35,
-                                    y: 6,
-                                    characterTypeId: 'citizen1',
-                                    name: 'Gwino the jester',
-                                    songs: [
-                                        'I\'ve got the key!'
-                                    ]
+                'x': 35,
+                'y': 6,
+                'npc_type_id': CITIZEN1,
+                'name': 'Gwino the jester',
+                'song': 'I\'ve got the key!',
             },
-            {x: 35, y: 12, characterTypeId: 'princess'},
-            {x: 36, y: 9, characterTypeId: 'guard'}
-            """,
+            {'x': 35, 'y': 12, 'npc_type_id': PRINCESS},
+            {'x': 36, 'y': 9, 'npc_type_id': GUARD}
         ],
         'castle_map': CASTLE_MAP_1,
     }

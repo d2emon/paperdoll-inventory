@@ -23,12 +23,12 @@ const mutations = {
       ...item,
       imageId: item.location_type.image_id
     }))
-    /*
-    state.people = castle.people.map((item, personId) => ({
-      ...item,
-      personId
-    }))
-    */
+    if (castle.characters) {
+      state.people = castle.characters.map((item, personId) => ({
+        ...item,
+        personId
+      }))
+    }
   },
   movePerson: (state, { personId, x, y }) => {
     const person = state.people[personId]

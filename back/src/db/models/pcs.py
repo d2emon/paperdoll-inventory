@@ -2,7 +2,7 @@ from flask import abort
 from app import db
 from .messages import Message
 from .locations import Location
-from .castles import Castle
+from .castles import Castle, CastleLocation
 
 
 START_X = 18
@@ -105,6 +105,11 @@ class Pc(db.Model):
             abort(404, "Character #{} doesn't exists".format(character_id))
         return pc
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return True
+
     def read_messages(self):
         return self.messages.limit(4).all()
 
@@ -123,10 +128,10 @@ class Pc(db.Model):
         new_x = self.x + x
         new_y = self.y + y
 
-        can_go = Location.can_go(new_x, new_y)
-        # const canGo = state.castleId
-        #   ? castleService.canGo(state.castleId, x, y)
-        #   : worldMapService.canGo(x, y)
+        if self.castle:
+            can_go = self.castle.can_go(new_x, new_y)
+        else:
+            can_go = Location.can_go(new_x, new_y)
 
         if not can_go:
             self.message()
@@ -138,11 +143,42 @@ class Pc(db.Model):
 
         self.eat()
 
-        db.session.add(self)
-        db.session.commit()
-        return True
+        saved = self.save()
+
+        if self.castle:
+            self.castle.next_step(self)
+        return saved
 
     def eat(self):
         self.food -= 0.5
 
+    def enter_castle(self, castle_id):
+        castle = Castle.query.get(castle_id)
 
+        if castle is None:
+            self.message()
+            return False
+
+        self.message("Entering... <br />{}".format(castle.name))
+
+        self.x = castle.entrance_x
+        self.y = castle.entrance_y
+        self.castle = castle
+
+        return self.save()
+
+    def exit_castle(self):
+        self.message("Exiting...")
+
+        # castle_id = request.form.get('castle')
+        # castle = Castle.get_or_404(castle_id)
+
+        castle = self.castle
+        if castle is None:
+            return False
+
+        self.x = castle.x
+        self.y = castle.y
+        self.castle = None
+
+        return self.save()

@@ -9,6 +9,8 @@ class LocalMixin:
     x = db.Column(db.Integer)
     y = db.Column(db.Integer)
 
+    default_passable = True
+
     @classmethod
     def by_coords(cls, x, y):
         return cls.query.filter_by(x=x, y=y)
@@ -34,6 +36,8 @@ class LocalMixin:
     @classmethod
     def can_go(cls, x, y):
         item = cls.by_coords(x, y).first()
+        print(x, y, item)
         if item is None:
-            return False
+            return cls.default_passable
+        print(x, y, item.passable)
         return item.passable

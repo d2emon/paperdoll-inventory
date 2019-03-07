@@ -1,6 +1,7 @@
 from flask import abort
 from app import db
 from .local_mixin import LocalMixin
+from .npcs import Npc
 
 
 class CastleLocationType(db.Model):
@@ -40,13 +41,29 @@ class Castle(LocalMixin, db.Model):
 
     @property
     def passable(self):
-        # if self.location_type:
-        #     return self.location_type.passable
         return True
 
+    def can_go(self, x, y):
+        def locatin_passable():
+            item = CastleLocation.by_coords(x, y).filter_by(castle_id=self.id).first()
+            if item is None:
+                return CastleLocation.default_passable
+            return item.passable
+
+        def character_passable():
+            item = Npc.by_coords(x, y).filter_by(castle_id=self.id).first()
+            if item is None:
+                return Npc.default_passable
+            return item.passable
+
+        return locatin_passable() and character_passable()
     # @property
     # def locations(self):
     #     return CastleLocation.by_castle(self.id)
+
+    def next_step(self, viewer):
+        for character in self.characters:
+            character.next_step(viewer)
 
 
 class CastleLocation(LocalMixin, db.Model):
