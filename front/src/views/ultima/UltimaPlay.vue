@@ -155,14 +155,16 @@
           C	Cast	Cast a spell. You must first commit the intended spell to memory, using the Ready command.
         </v-flex>
         <v-flex xs3>
-          D	Drop	Dispose of unwanted items while in a town or castle. Dropped items cannot be retrieved.
+          <v-btn
+            @click="enterCastle"
+          >
+            <span class="hotkey">D</span>rop
+          </v-btn>
+          <p>Dispose of unwanted items while in a town or castle. Dropped items cannot be retrieved.</p>
         </v-flex>
         <v-flex xs3>
-          <h5>
-            <span class="hotkey">E</span>nter
-          </h5>
           <v-btn
-            :disabled="!castle || !castle.id"
+            :disabled="!canEnter"
             @click="enterCastle"
           >
             <span class="hotkey">E</span>nter
@@ -211,11 +213,8 @@
           V View Change Switches the view in future transport crafts between front and top perspectives.
         </v-flex>
         <v-flex xs3>
-          <h5>
-            <span class="hotkey">X</span>-it
-          </h5>
           <v-btn
-            :disabled="castle && castle.id"
+            :disabled="!canExit"
             @click="exitCastle"
           >
             <span class="hotkey">X</span>-it
@@ -255,7 +254,9 @@
       ...mapState('view', [
         'location',
         'castle',
-      ])
+      ]),
+      canEnter() { return this.castle && !this.castleId },
+      canExit() { return this.castle && !!this.castleId },
     },
     mounted () {
       if (!this.characterId) return this.$router.push('/ultima')
@@ -264,44 +265,24 @@
     },
     methods: {
       ...mapActions('view', ['fetchView']),
-      ...mapActions('gameConsole', [
-        'doCommand',
-        'receiveMessages',
-      ]),
       ...mapActions('pc', ['doAction']),
       goDirection (direction) {
-        this.doCommand({
-          playerId: this.characterId,
-          command: 'Go',
-          direction
+        this.doAction({
+          action: 'go',
+          params: { direction }
         })
-          .then(() => Promise.all([
-            this.receiveMessages(this.characterId),
-            this.fetchView(this.position)
-          ]))
       },
       enterCastle () {
-        this.doCommand({
-          playerId: this.characterId,
-          command: 'Enter',
-          castle: this.castle.id
+        this.doAction({
+          action: 'enter',
+          params: { castle: this.castle && this.castle.id }
         })
-          .then(() => Promise.all([
-            this.receiveMessages(this.characterId),
-            this.fetchView(this.position)
-          ]))
       },
       exitCastle () {
-        this.doCommand({
-          playerId: this.characterId,
-          command: 'Exit',
-          castle: this.castle.id,
-          location: this.castle
+        this.doAction({
+          action: 'exit',
+          params: {}
         })
-          .then(() => Promise.all([
-            this.receiveMessages(this.characterId),
-            this.fetchView(this.position)
-          ]))
       }
     }
   }

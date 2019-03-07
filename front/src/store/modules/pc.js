@@ -150,23 +150,15 @@ const actions = {
   },
 
   doAction: ({ state, dispatch }, { action, params }) => {
+    console.log({ action, params })
     return pcService.doAction(state.characterId, action, params)
       .then(() => dispatch('loadCharacter', state.characterId))
-      .then(() => dispatch('castle/fetchCastle', state.castleId, { root: true }))
+      .then(() => { if (state.castleId) return dispatch('castle/fetchCastle', state.castleId, { root: true }) })
+      .then(() => Promise.all([
+        dispatch('gameConsole/receiveMessages', state.characterId, { root: true }),
+        dispatch('view/fetchView', state.position, { root: true }),
+      ]))
   },
-
-  enterCastle: ({ commit, dispatch }, params) => {
-    // commit('setCastle', castle.castleId)
-    // commit('setPosition', castle.entrance)
-
-    return dispatch('doAction', { action: 'enter', params })
-  },
-  exitCastle: ({ commit }, params) => {
-    // commit('setCastle', null)
-    // commit('setPosition', { x: castle.x, y: castle.y })
-
-    return dispatch('doAction', { action: 'exit', params })
-  }
 }
 
 export default {

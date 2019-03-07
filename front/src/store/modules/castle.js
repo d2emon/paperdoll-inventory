@@ -29,32 +29,12 @@ const mutations = {
         personId
       }))
     }
-  },
-  movePerson: (state, { personId, x, y }) => {
-    const person = state.people[personId]
-    state.people[personId] = {
-      ...person,
-      x,
-      y,
-    }
   }
 }
 
 const actions = {
-  fetchCastle: ({ commit, dispatch }, castleId) => {
-    if (!castleId) return commit('setCastle', null)
-
-    return castleService
-      .fetchCastle(castleId)
-      .then(({ castle }) => commit('setCastle', castle))
-  },
-  movePeople: ({ state, commit }) => {
-    if (!state.castle) return
-
-    return castleService
-      .movePeople(state.castle.castleId)
-      .then(({ castle }) => commit('setCastle', castle))
-  }
+  fetchCastle: ({ commit, dispatch }, castleId) => castleService.fetchCastle(castleId)
+    .then(({ castle }) => commit('setCastle', castle))
 }
 
 export default {

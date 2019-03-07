@@ -141,13 +141,13 @@ class Pc(db.Model):
         self.x = new_x
         self.y = new_y
 
-        self.eat()
-
-        saved = self.save()
+        self.save()
 
         if self.castle:
             self.castle.next_step(self)
-        return saved
+        else:
+            self.eat()
+        return self.save()
 
     def eat(self):
         self.food -= 0.5

@@ -36,9 +36,11 @@
       images: [
         `${process.env.BASE_URL}ultima/grass.png`,
         `${process.env.BASE_URL}ultima/trees.png`,
-        `${process.env.BASE_URL}ultima/trees.png`,
+        `${process.env.BASE_URL}ultima/castle.png`,
         `${process.env.BASE_URL}ultima/water.png`,
-        `${process.env.BASE_URL}ultima/castle.png`
+        `${process.env.BASE_URL}ultima/trees.png`,
+        `${process.env.BASE_URL}ultima/castle.png`,
+        `${process.env.BASE_URL}ultima/trees.png`,
       ]
     }),
     computed: {
