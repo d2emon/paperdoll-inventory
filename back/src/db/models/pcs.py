@@ -173,12 +173,16 @@ class Pc(db.Model):
             self.message()
             return False
 
-        ponds = filter(lambda item: item and item.location_type.is_pond, self.nesw.items())
+        ponds = list(filter(lambda item: item and item.location_type.is_pond, self.nesw.values()))
         if len(ponds) <= 0:
             self.message()
             return False
 
-        pence = int(kwargs.get('pence'))
+        try:
+            pence = int(kwargs.get('pence'))
+        except ValueError:
+            pence = 0
+
         if pence:
             self.coin = max(0, self.coin - pence)
             self.message("Drop Pence: {}".format(pence))

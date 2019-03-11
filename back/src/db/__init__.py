@@ -7,14 +7,14 @@ def init_db(db):
         from .models.npcs import Npc
     db.create_all()
 
-    add_players(db)
-
     generate_locations(db)
     generate_castle_locations(db)
     generate_npcs(db)
 
     generate_world(db)
     generate_castles(db)
+
+    add_players(db)
 
 
 def add_players(db):
@@ -42,8 +42,10 @@ def add_players(db):
         sex_id=1,
         class_id=1,
 
-        x=9,
-        y=4,
+        x=0,
+        y=9,
+
+        castle_id=1,
     )
     db.session.add(kikoskia)
     db.session.commit()

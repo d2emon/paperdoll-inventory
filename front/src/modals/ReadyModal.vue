@@ -1,7 +1,7 @@
 <template>
   <selection-modal
-    title="Drop Pence, Weapon, Armor?"
-    :items="drops"
+    title="Ready Weapon, Armor, Spell:"
+    :items="toReady"
     :value="value"
     @input="input"
     @select="select"
@@ -9,10 +9,10 @@
   >
     <v-flex
       xs6
-      v-if="dropType === 1"
+      v-if="readyType === 1"
     >
       <v-text-field
-        v-model="pence"
+        v-model="spell"
         type="number"
         label="Drop pence:"
         :min="0"
@@ -21,7 +21,7 @@
     </v-flex>
     <v-flex
       xs6
-      v-else-if="dropType === 2"
+      v-else-if="readyType === 2"
     >
       <v-text-field
         v-model="weapon"
@@ -31,7 +31,7 @@
     </v-flex>
     <v-flex
       xs6
-      v-else-if="dropType === 3"
+      v-else-if="readyType === 3"
     >
       <v-text-field
         v-model="armor"
@@ -39,16 +39,17 @@
         label="Drop armor:"
       />
     </v-flex>
+
   </selection-modal>
 </template>
 
 <script>
-  const PENCE = 1
-  const WEAPON = 2
-  const ARMOR = 3
+  const WEAPON = 1
+  const ARMOR = 2
+  const SPELL = 3
 
   export default {
-    name: 'DropModal',
+    name: 'ReadyModal',
     components: {
       SelectionModal: () => import('@/modals/SelectionModal')
     },
@@ -57,30 +58,36 @@
       coin: Number,
     },
     data: () => ({
-      dropType: null,
-      drops: [
-        { id: PENCE, title: 'Pence' },
+      visible: false,
+      toReady: [
         { id: WEAPON, title: 'Weapon' },
         { id: ARMOR, title: 'Armor' },
+        { id: SPELL, title: 'Spell' },
       ],
-      pence: null,
+      readyType: 0,
+
+      weapons: [],
+      armors: [],
+      spells: [],
+
       weapon: null,
       armor: null,
+      spell: null,
     }),
     watch: {
       value (value) {
-        this.dropType = null
-        this.pence = null
+        this.readyType = 0
         this.weapon = null
         this.armor = null
+        this.spell = null
       },
     },
     methods: {
-      select (selected) { this.dropType = selected },
-      ready () { this.$emit('drop', {
-        pence: this.pence,
+      select (selected) { this.readyType = selected },
+      ready () { this.$emit('ready', {
         weapon: this.weapon,
         armor: this.armor,
+        spell: this.spell,
       }) },
       input (value) { this.$emit('input', value) }
     }

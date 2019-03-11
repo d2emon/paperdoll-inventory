@@ -199,7 +199,15 @@
           Q Quit (and save to disk)	Use this command to stop playing (from the outside world only) and save your progress to disk. You can resume the game from this point.
         </v-flex>
         <v-flex xs3>
-          R	Ready	Equip yourself with a specific weapon, wear a selected suit of armor, or learn a magic spell. Must be performed prior to using an item.
+          <v-btn
+            @click="toReady = true"
+          >
+            <span class="hotkey">R</span>eady
+          </v-btn>
+          <p>
+            Equip yourself with a specific weapon, wear a selected suit of armor, or learn a magic spell. Must be
+            performed prior to using an item.
+          </p>
         </v-flex>
         <v-flex xs3>
           S	Steal	Used to take items from the unwatched counters of shops and the dark caches in castles. Beware, for the guards frown on this behavior.
@@ -235,6 +243,12 @@
       :coin="coin"
       @drop="drop"
     />
+
+    <ready-modal
+      v-model="toReady"
+      :coin="coin"
+      @drop="ready"
+    />
   </v-card>
 </template>
 
@@ -251,10 +265,12 @@
       LocalMap: () => import('@/components/ultima/LocalMap'),
       CastleMap: () => import('@/components/ultima/CastleMap'),
       GameConsole: () => import('@/components/ultima/GameConsole'),
-      DropModal: () => import('@/modals/DropModal')
+      DropModal: () => import('@/modals/DropModal'),
+      ReadyModal: () => import('@/modals/ReadyModal')
     },
     data: () => ({
-      toDrop: false
+      toDrop: false,
+      toReady: false
     }),
     computed: {
       ...mapState('pc', [
@@ -295,8 +311,9 @@
       ...mapActions('view', ['fetchView']),
       ...mapActions('pc', ['doAction']),
       goDirection (direction) { this.doAction({ action: 'go', params: { direction } }) },
-      drop (params) { console.log(params); this.doAction({ action: 'drop', params }) },
+      drop (params) { this.doAction({ action: 'drop', params }) },
       enterCastle () { this.doAction({ action: 'enter', params: { castle: this.castle && this.castle.id } }) },
+      ready (params) { this.doAction({ action: 'ready', params }) },
       exitCastle () { this.doAction({ action: 'exit', params: {} }) }
     }
   }
