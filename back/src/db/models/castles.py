@@ -79,8 +79,11 @@ class Castle(LocalMixin, MapMixin, db.Model):
     def passable(self):
         return True
 
+    def characters_by_coords(self, x, y):
+        return Npc.by_coords(x, y).filter_by(castle_id=self.id)
+
     def characters_passable(self, x, y):
-        item = Npc.by_coords(x, y).filter_by(castle_id=self.id).first()
+        item = self.characters_by_coords(x, y).first()
         if item is None:
             return Npc.default_passable
         return item.passable

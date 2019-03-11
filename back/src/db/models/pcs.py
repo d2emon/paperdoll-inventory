@@ -162,6 +162,16 @@ class Pc(db.Model):
             'w': actual_map.child_by_coords(self.x - 1, self.y).first(),
         }
 
+    @property
+    def transactables(self):
+        actual_map = self.actual_map
+        return list(filter(lambda item: item is not None, [
+            actual_map.characters_by_coords(self.x, self.y - 1).first(),
+            actual_map.characters_by_coords(self.x + 1, self.y).first(),
+            actual_map.characters_by_coords(self.x, self.y + 1).first(),
+            actual_map.characters_by_coords(self.x - 1, self.y).first(),
+        ]))
+
     def walk(self, direction_id):
         x, y = get_direction(direction_id)
         new_x = self.x + x

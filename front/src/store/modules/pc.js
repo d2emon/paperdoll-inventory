@@ -27,6 +27,7 @@ const state = {
   castleId: 0,
   position: {},
   nesw: {},
+  transactables: [],
 
   weapons: [],
   activeWeapon: 0,
@@ -81,6 +82,7 @@ const mutations = {
 
     state.castleId = character.castle_id
     state.nesw = character.nesw
+    state.transactables = character.transactables
 
     state.weapons = character.weapons
     state.activeWeapon = character.active_weapon

@@ -74,3 +74,6 @@ class MapMixin:
 
     def child_by_coords(self, x, y):
         return self.child_model.by_coords(x, y).filter_by(map_id=self.id)
+
+    def characters_by_coords(self, x, y):
+        return None

@@ -1,6 +1,7 @@
 from flask_restplus import fields
 from . import api
 from ..locations.models import LocationModel
+from ..castles.models import NpcModel
 
 
 LookupModel = api.model('Lookup', {
@@ -41,6 +42,7 @@ CharacterModel = api.model('Character', {
     'castle_id': fields.Integer,
 
     'nesw': fields.Nested(NeswModel, skip_none=True),
+    'transactables': fields.List(fields.Nested(NpcModel, skip_none=True)),
 
     'weapons': fields.List(fields.Nested(LookupModel, skip_none=True)),
     'active_weapon': fields.Integer,

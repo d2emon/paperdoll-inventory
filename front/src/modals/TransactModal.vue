@@ -1,7 +1,7 @@
 <template>
   <selection-modal
-    title="Ready Weapon, Armor, Spell:"
-    :items="toReady"
+    title="Transact with"
+    :items="characters"
     :value="value"
     @input="input"
     @select="select"
@@ -51,28 +51,20 @@
 </template>
 
 <script>
-  const WEAPON = 1
-  const ARMOR = 2
-  const SPELL = 3
-
   export default {
-    name: 'ReadyModal',
+    name: 'TransactModal',
     components: {
       SelectionModal: () => import('@/modals/SelectionModal')
     },
     props: {
       value: Boolean,
-      weapons: Array,
+      characters: Array,
     },
     data: () => ({
       visible: false,
-      toReady: [
-        { id: WEAPON, title: 'Weapon' },
-        { id: ARMOR, title: 'Armor' },
-        { id: SPELL, title: 'Spell' },
-      ],
-      readyType: null,
+      characterId: null,
 
+      weapons: [],
       armors: [],
       spells: [],
 
@@ -82,14 +74,14 @@
     }),
     watch: {
       value (value) {
-        this.readyType = null
+        this.characterId = null
         this.weapon = null
         this.armor = null
         this.spell = null
       },
     },
     methods: {
-      select (selected) { this.readyType = selected },
+      select (selected) { this.characterId = selected },
       ready () { this.$emit('ready', {
         weapon: this.weapon,
         armor: this.armor,

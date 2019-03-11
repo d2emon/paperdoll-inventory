@@ -3,7 +3,7 @@ from . import api
 from ..locations.models import LocationTypeModel, LocationModel
 
 
-CharacterModel = api.model('Character', {
+NpcModel = api.model('Character', {
     'x': fields.Integer,
     'y': fields.Integer,
     'npc_type_id': fields.Integer,
@@ -16,5 +16,5 @@ CastleModel = api.model('Castle', {
     'y': fields.Integer,
     'name': fields.String,
     'locations': fields.List(fields.Nested(LocationModel)),
-    'characters': fields.List(fields.Nested(CharacterModel)),
+    'characters': fields.List(fields.Nested(NpcModel)),
 })

@@ -213,7 +213,13 @@
           S	Steal	Used to take items from the unwatched counters of shops and the dark caches in castles. Beware, for the guards frown on this behavior.
         </v-flex>
         <v-flex xs3>
-          T Transact Conduct business with merchants or kings.
+          <v-btn
+            :disabled="!canTransact"
+            @click="toTransact = true"
+          >
+            <span class="hotkey">T</span>ransact
+          </v-btn>
+          <p>Conduct business with merchants or kings.</p>
         </v-flex>
         <v-flex xs3>
           U	Unlock	Open cells in castles or chests in dungeons. Danger may follow.
@@ -247,8 +253,13 @@
 
     <ready-modal
       v-model="toReady"
-      :coin="coin"
       :weapons="weapons"
+      @ready="ready"
+    />
+
+    <transact-modal
+      v-model="toTransact"
+      :weapons="transactables"
       @ready="ready"
     />
   </v-card>
@@ -268,11 +279,13 @@
       CastleMap: () => import('@/components/ultima/CastleMap'),
       GameConsole: () => import('@/components/ultima/GameConsole'),
       DropModal: () => import('@/modals/DropModal'),
-      ReadyModal: () => import('@/modals/ReadyModal')
+      ReadyModal: () => import('@/modals/ReadyModal'),
+      TransactModal: () => import('@/modals/TransactModal')
     },
     data: () => ({
       toDrop: false,
-      toReady: false
+      toReady: false,
+      toTransact: false
     }),
     computed: {
       ...mapState('pc', [
@@ -281,6 +294,7 @@
         'castleId',
         'coin',
         'nesw',
+        'transactables',
         'weapons',
       ]),
       ...mapState('view', [
@@ -304,6 +318,7 @@
       },
       canEnter() { return this.castle && !this.castleId },
       canExit() { return this.castle && !!this.castleId },
+      canTransact() { return this.transactables && this.transactables.length > 0 },
     },
     mounted () {
       if (!this.characterId) return this.$router.push('/ultima')
