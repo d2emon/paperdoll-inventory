@@ -41,4 +41,7 @@ CharacterModel = api.model('Character', {
     'castle_id': fields.Integer,
 
     'nesw': fields.Nested(NeswModel, skip_none=True),
+
+    'weapons': fields.List(fields.Nested(LookupModel, skip_none=True)),
+    'active_weapon': fields.Integer,
 })

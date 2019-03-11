@@ -11,33 +11,40 @@
       xs6
       v-if="readyType === 1"
     >
-      <v-text-field
-        v-model="spell"
-        type="number"
-        label="Drop pence:"
-        :min="0"
-        :max="coin"
-      />
+      <v-radio-group v-model="weapon">
+        <v-radio
+          label="Hands"
+          :value="0"
+        ></v-radio>
+        <v-radio
+          v-for="item in weapons"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+        ></v-radio>
+      </v-radio-group>
     </v-flex>
     <v-flex
       xs6
       v-else-if="readyType === 2"
     >
-      <v-text-field
-        v-model="weapon"
-        type="number"
-        label="Drop weapon:"
-      />
+        <v-radio
+          v-for="item in armors"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+        ></v-radio>
     </v-flex>
     <v-flex
       xs6
       v-else-if="readyType === 3"
     >
-      <v-text-field
-        v-model="armor"
-        type="number"
-        label="Drop armor:"
-      />
+        <v-radio
+          v-for="item in spells"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+        ></v-radio>
     </v-flex>
 
   </selection-modal>
@@ -56,6 +63,7 @@
     props: {
       value: Boolean,
       coin: Number,
+      weapons: Array,
     },
     data: () => ({
       visible: false,
@@ -64,9 +72,8 @@
         { id: ARMOR, title: 'Armor' },
         { id: SPELL, title: 'Spell' },
       ],
-      readyType: 0,
+      readyType: null,
 
-      weapons: [],
       armors: [],
       spells: [],
 
@@ -76,7 +83,7 @@
     }),
     watch: {
       value (value) {
-        this.readyType = 0
+        this.readyType = null
         this.weapon = null
         this.armor = null
         this.spell = null

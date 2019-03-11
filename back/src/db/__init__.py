@@ -1,10 +1,11 @@
 def init_db(db):
     if len(db.metadata.tables.keys()) <= 0:
-        from .models.pcs import Pc, Race, CharacterClass, Sex
         from .models.messages import Message
         from .models.locations import LocationType, Location
         from .models.castles import Castle
         from .models.npcs import Npc
+        from .models.weapons import Weapon
+        from .models.pcs import Pc, Race, CharacterClass, Sex
     db.create_all()
 
     generate_locations(db)
@@ -19,7 +20,9 @@ def init_db(db):
 
 def add_players(db):
     from .fixtures.pcs import RACES, CLASSES, SEXES
+    from .fixtures.weapons import WEAPONS
     from .models.pcs import Pc, Race, CharacterClass, Sex
+    from .models.weapons import Weapon
 
     for race in RACES:
         db.session.add(Race(race))
@@ -29,6 +32,9 @@ def add_players(db):
 
     for sex in SEXES:
         db.session.add(Sex(sex))
+
+    for weapon in WEAPONS:
+        db.session.add(Weapon(name=weapon))
     db.session.commit()
 
     kikoskia = Pc(
@@ -47,6 +53,7 @@ def add_players(db):
 
         castle_id=1,
     )
+
     db.session.add(kikoskia)
     db.session.commit()
 

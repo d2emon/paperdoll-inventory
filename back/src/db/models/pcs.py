@@ -1,8 +1,8 @@
 from flask import abort
 from app import db
 from .messages import Message
-from .locations import Location
-from .castles import Castle, CastleLocation
+from .castles import Castle
+from .weapons import Weapon
 
 
 START_X = 18
@@ -45,6 +45,14 @@ class Sex(NamedMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
 
+pc_weapons_table = db.Table(
+    'pc_weapons',
+    db.metadata,
+    db.Column('pc_id', db.Integer, db.ForeignKey('pc.id')),
+    db.Column('weapon_id', db.Integer, db.ForeignKey('weapon.id')),
+)
+
+
 class Pc(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(16))
@@ -64,6 +72,8 @@ class Pc(db.Model):
     x = db.Column(db.Integer, default=START_X)
     y = db.Column(db.Integer, default=START_Y)
 
+    active_weapon = db.Column(db.Integer, default=0)
+
     race_id = db.Column(db.Integer, db.ForeignKey('race.id'))
     race = db.relationship('Race')
 
@@ -78,6 +88,8 @@ class Pc(db.Model):
 
     castle_id = db.Column(db.Integer, db.ForeignKey('castle.id'))
     castle = db.relationship('Castle')
+
+    weapons = db.relationship('Weapon', secondary=pc_weapons_table)
 
     def __init__(self, **fields):
         self.name = fields.get('name', '')
@@ -101,8 +113,13 @@ class Pc(db.Model):
         self.x = fields.get('x', START_X)
         self.y = fields.get('y', START_Y)
 
+        self.active_weapon = fields.get('active_weapon', 0)
+
         self.map_id = fields.get('map_id', 1)
         self.castle_id = fields.get('castle_id')
+
+        dagger = Weapon.query.get(1)
+        self.weapons.append(dagger)
 
     @classmethod
     def get_or_404(cls, character_id):
@@ -178,17 +195,50 @@ class Pc(db.Model):
             self.message()
             return False
 
-        try:
-            pence = int(kwargs.get('pence'))
-        except ValueError:
-            pence = 0
+        coins = kwargs.get('coins')
+        weapon = kwargs.get('weapon')
+        armor = kwargs.get('armor')
+        miracle = 0
+        if coins:
+            self.coin = max(0, self.coin - coins)
+            self.message("Drop Pence: {}".format(coins))
+            miracle = coins
+        if weapon:
+            self.message("Drop Weapon: {}".format(weapon))
+            miracle = weapon
+        if armor:
+            self.message("Drop Armor: {}".format(armor))
+            miracle = armor
 
-        if pence:
-            self.coin = max(0, self.coin - pence)
-            self.message("Drop Pence: {}".format(pence))
+        if miracle > 0:
+            prise = Weapon.get_random()
+            self.weapons.append(prise)
+
+            db.session.add(self)
+            db.session.commit()
             self.message("Shazam!")
             return True
+
         self.message('Drop Pence, Weapon, Armor')
+        return False
+
+    def ready(self, **kwargs):
+        weapon = kwargs.get('weapon')
+        armor = kwargs.get('armor')
+        spell = kwargs.get('spell')
+        if weapon:
+            # self.message("Drop Weapon: {}".format(weapon))
+            self.active_weapon = weapon
+        if armor:
+            # self.message("Drop Armor: {}".format(armor))
+            self.active_weapon = armor
+        if spell:
+            # self.message("Drop Armor: {}".format(armor))
+            self.active_weapon = spell
+        db.session.add(self)
+        db.session.commit()
+
+        self.message('Ready Weapon, Armor, Spell')
         return False
 
     def enter_castle(self, castle_id):

@@ -241,13 +241,15 @@
     <drop-modal
       v-model="toDrop"
       :coin="coin"
+      :weapons="weapons"
       @drop="drop"
     />
 
     <ready-modal
       v-model="toReady"
       :coin="coin"
-      @drop="ready"
+      :weapons="weapons"
+      @ready="ready"
     />
   </v-card>
 </template>
@@ -278,7 +280,8 @@
         'position',
         'castleId',
         'coin',
-        'nesw'
+        'nesw',
+        'weapons',
       ]),
       ...mapState('view', [
         'location',

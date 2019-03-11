@@ -28,6 +28,9 @@ const state = {
   position: {},
   nesw: {},
 
+  weapons: [],
+  activeWeapon: 0,
+
   error: null
 }
 
@@ -78,6 +81,9 @@ const mutations = {
 
     state.castleId = character.castle_id
     state.nesw = character.nesw
+
+    state.weapons = character.weapons
+    state.activeWeapon = character.active_weapon
   },
   setStat: (state, { stat, value }) => { state.stats[stat] = value },
   setRace: (state, race) => { state.race = race },

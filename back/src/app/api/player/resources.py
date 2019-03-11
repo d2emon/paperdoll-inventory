@@ -7,6 +7,16 @@ from . import ns, api
 from .models import LookupModel, CharacterModel
 
 
+def int_params(names, kwargs):
+    result = dict()
+    for name in names:
+        try:
+            result[name] = int(kwargs.get(name))
+        except (ValueError, TypeError):
+            result[name] = None
+    return result
+
+
 @ns.route('/races/')
 class Races(Resource):
     @ns.doc('list_races')
@@ -84,10 +94,22 @@ class MoveCharacter(Resource):
             direction_id = request.form.get('direction')
             character.walk(direction_id)
         elif action == 'drop':
-            character.drop(**request.form)
+            param_names = [
+                'coins',
+                'weapon',
+                'armor',
+            ]
+            character.drop(**int_params(param_names, request.form))
         elif action == 'enter':
             castle_id = request.form.get('castle')
             character.enter_castle(castle_id)
+        elif action == 'ready':
+            param_names = [
+                'weapon',
+                'armor',
+                'spell'
+            ]
+            character.ready(**int_params(param_names, request.form))
         elif action == 'exit':
             character.exit_castle()
         return character

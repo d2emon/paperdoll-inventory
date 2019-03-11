@@ -23,11 +23,14 @@
       xs6
       v-else-if="dropType === 2"
     >
-      <v-text-field
-        v-model="weapon"
-        type="number"
-        label="Drop weapon:"
-      />
+      <v-radio-group v-model="weapon">
+        <v-radio
+          v-for="item in weapons"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+        ></v-radio>
+      </v-radio-group>
     </v-flex>
     <v-flex
       xs6
@@ -55,6 +58,7 @@
     props: {
       value: Boolean,
       coin: Number,
+      weapons: Array,
     },
     data: () => ({
       dropType: null,
@@ -78,7 +82,7 @@
     methods: {
       select (selected) { this.dropType = selected },
       ready () { this.$emit('drop', {
-        pence: this.pence,
+        coins: this.pence,
         weapon: this.weapon,
         armor: this.armor,
       }) },
